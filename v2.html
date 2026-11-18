@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%230b6bcb' stroke-width='5'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%230b6bcb'/%3E%3C/svg%3E">
+<title>PROSIG — Vježba 2: Membranski potencijal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main class="page">
+  <div class="page-head">
+    <div class="kicker"><span data-i18n="nav.ex"></span> 2</div>
+    <h1 data-i18n="ex2"></h1>
+  </div>
+  <div class="purpose" data-lang="hr"><b>SVRHA VJEŽBE</b> je analiza uspostave i održavanja membranskog potencijala na simulacijskoj membrani stanica podražljivog tkiva uz pomoć interaktivnog simulacijskog programa u kojem je moguće mijenjati dvije varijable: (1) koncentracija Na⁺, K⁺ i Cl⁻ (izvanstanična) i (2) vodljivost membrane za Na⁺, K⁺ i Cl⁻.</div>
+  <div class="purpose" data-lang="en"><b>PURPOSE OF THE EXERCISE:</b> to analyse how the membrane potential of excitable cells is established and maintained on a simulated membrane, using an interactive program in which two variables can be changed: (1) the extracellular concentrations of Na⁺, K⁺ and Cl⁻, and (2) the membrane conductance for Na⁺, K⁺ and Cl⁻.</div>
+  <div id="intro"></div>
+  <div id="modes"></div>
+  <div class="sim" id="sim"></div>
+  <div class="materials-title" data-i18n="materials"></div>
+  <div id="sections"></div>
+</main>
+
+<template id="tpl-key">
+  <ul>
+    <li>Potencijal mirovanja (≈ −70 mV) nastaje jer je membrana u mirovanju <b>najpropusnija za K⁺</b>, a Na⁺/K⁺-crpka održava gradijente.</li>
+    <li><b>Koncentracije</b> određuju ravnotežne potencijale (Nernst); <b>vodljivosti</b> određuju koji od njih prevladava (Goldman).</li>
+    <li>Zato promjena <b>izvanstaničnog K⁺</b> jako mijenja potencijal mirovanja (hiperkalemija depolarizira), a promjena Na⁺ — <i>unutar raspona spojivih sa životom</i> — puno slabije: K⁺ od 2,5 do 7 mmol/L pomiče E<sub>m</sub> za ≈ 7,6 mV, a Na⁺ od 120 do 150 mmol/L za ≈ 3,0 mV.</li>
+  </ul>
+</template>
+<template id="tpl-key-en">
+  <ul>
+    <li>The resting potential (≈ −70 mV) exists because the resting membrane is <b>most permeable to K⁺</b>, while the Na⁺/K⁺ pump maintains the gradients.</li>
+    <li><b>Concentrations</b> set the equilibrium potentials (Nernst); <b>conductances</b> decide which of them prevails (Goldman).</li>
+    <li>Hence a change in <b>extracellular K⁺</b> strongly changes the resting potential (hyperkalaemia depolarises), while a change in Na⁺ — <i>within ranges compatible with life</i> — matters far less: K⁺ from 2.5 to 7 mmol/L shifts E<sub>m</sub> by ≈ 7.6 mV, Na⁺ from 120 to 150 mmol/L by ≈ 3.0 mV.</li>
+  </ul>
+</template>
+
+<template id="tpl-outcomes">
+  <h2>Nakon obrade ove vježbe moći ćete:</h2>
+  <ol>
+    <li>objasniti pojam transmembranski potencijal i opisati na koji se način uspostavlja na membrani biološke stanice te navesti koji su ioni uključeni u njegovu uspostavu</li>
+    <li>navesti čimbenike koji mogu mijenjati membranski potencijal</li>
+    <li>objasniti mehanizme koji su odgovorni za održanje negativnog staničnog potencijala</li>
+    <li>navesti i opisati mehanizme kojim tri čimbenika nadziru kretanje iona kroz membranu</li>
+    <li>analizirati učinke promjena koncentracije iona na transmembranski potencijal</li>
+    <li>odrediti hoće li se ioni kretati iz stanice prema izvanstaničnom prostoru ili obrnuto pri zadanom potencijalu membrane i zadanom koncentracijskom gradijentu za odabrane ione</li>
+    <li>odrediti kakve će učinke na membranski potencijal imati promjene vodljivosti membrane za ione</li>
+    <li>izračunati ravnotežni potencijal za ione koji sudjeluju u uspostavi membranskog potencijala i procijeniti koji ioni jesu, a koji nisu u stanju elektrokemijske ravnoteže</li>
+  </ol>
+</template>
+
+<template id="tpl-theory">
+  <span class="draft">Nacrt — ovaj odjeljak u izvornoj verziji nije bio napisan; tekst je pripremljen za pregled autora.</span>
+  <p><b>TEORIJSKI DIO.</b> Sve žive stanice održavaju razliku električnog potencijala između unutarstaničnog i izvanstaničnog prostora koju nazivamo <b><i>membranski potencijal</i></b> (E<sub>m</sub>). Prema dogovoru potencijal izvanstanične tekućine uzima se kao nula, pa je membranski potencijal mirovanja negativan — u neuronima i skeletnim mišićnim vlaknima iznosi približno −70 do −90 mV, dok je u drugim stanicama (npr. eritrociti, epitelne stanice) manje negativan. Membranski potencijal mirovanja rezultat je (1) nejednolike raspodjele iona s jedne i druge strane membrane i (2) selektivne propusnosti membrane za pojedine ione — dakle istih dvaju preduvjeta koje ste upoznali u Vježbi 1.</p>
+  <p>Nejednoliku raspodjelu iona stvara i održava <b>Na⁺/K⁺-ATPaza</b> (Na/K crpka) koja u svakom ciklusu izbacuje tri Na⁺ iz stanice, a unosi dva K⁺ u stanicu. Zbog toga je unutarstanična koncentracija K⁺ visoka (oko 150 mmol/L), a Na⁺ niska (oko 14 mmol/L), dok je u izvanstaničnoj tekućini obrnuto (K⁺ ≈ 4–5 mmol/L, Na⁺ ≈ 142 mmol/L). Kloridi su u izvanstaničnoj tekućini zastupljeni s oko 109 mmol/L, a u stanici s oko 6 mmol/L. Budući da crpka izbacuje više pozitivnih naboja nego što ih unosi, ona je <i>elektrogena</i> i neposredno pridonosi negativnosti potencijala s nekoliko milivolta; njezin je glavni doprinos ipak posredan — održavanje koncentracijskih gradijenata.</p>
+  <p>Membrana u mirovanju najpropusnija je za K⁺ jer su u njoj stalno otvoreni pasivni (propuštajući) kalijski kanali. K⁺ stoga niz svoj koncentracijski gradijent izlazi iz stanice, a budući da za njim zaostaju neprolazni unutarstanični anioni (bjelančevine, organski fosfati), unutrašnjost stanice postaje negativna. Nastali električni gradijent vraća K⁺ u stanicu sve dok se električna i kemijska sila ne izjednače — pri ravnotežnom potencijalu za kalij (E<sub>K</sub> ≈ −90 mV, Nernstova jednadžba). Membranski potencijal mirovanja bliži je E<sub>K</sub> nego ravnotežnom potencijalu za Na⁺ (E<sub>Na</sub> ≈ +60 mV) upravo zato što je propusnost za K⁺ u mirovanju višestruko veća od propusnosti za Na⁺ (u simulaciji: g<sub>K</sub> = 18, g<sub>Na</sub> = 1, g<sub>Cl</sub> = 10).</p>
+  <p>Ipak, membrana u mirovanju nije propusna isključivo za K⁺; mali, ali stalni ulazak Na⁺ čini potencijal mirovanja nešto manje negativnim od E<sub>K</sub>. Stoga se za izračunavanje potencijala mirovanja koristi <b>Goldman-Hodgkin-Katzova jednadžba</b> koja u obzir uzima koncentracije i relativne propusnosti svih iona za koje je membrana propusna (vidi gumb <i>Prikaži formulu</i> u simulaciji). Ioni čiji je ravnotežni potencijal jednak membranskom potencijalu nalaze se u elektrokemijskoj ravnoteži i za njih nema neto toka (u mnogim je stanicama to slučaj s Cl⁻); ioni čiji se ravnotežni potencijal razlikuje od E<sub>m</sub> podliježu <i>pokretačkoj sili</i> razmjernoj toj razlici (E<sub>m</sub> − E<sub>ion</sub>) i njihov bi neto tok, bez djelovanja crpke, postupno rasipao gradijente.</p>
+  <p>Iz GHK jednadžbe slijede dva pravila koja ćete provjeriti u simulaciji. <b>Prvo</b>: promjena <i>izvanstanične</i> koncentracije iona mijenja njegov ravnotežni potencijal, a membranski potencijal mijenja to više što je propusnost za taj ion veća — zato hiperkalemija izrazito depolarizira membranu (E<sub>K</sub> i E<sub>m</sub> rastu), dok promjene izvanstaničnog Na⁺ imaju mali učinak na potencijal mirovanja. <b>Drugo</b>: povećanje vodljivosti za pojedini ion pomiče E<sub>m</sub> prema ravnotežnom potencijalu tog iona — povećanje g<sub>Na</sub> depolarizira, povećanje g<sub>K</sub> hiperpolarizira (ili stabilizira) membranu. Ove su zakonitosti temelj razumijevanja akcijskog potencijala (Vježba 3) i kliničkih stanja poput hiperkalemije i hipokalemije koje mijenjaju podražljivost srčanog i skeletnog mišića.</p>
+</template>
+
+<template id="tpl-howto">
+  <p><b>IZVOĐENJE VJEŽBE.</b> Za izvođenje vježbe koristi se drugi od četiri modula simulacijskog programa „PROSIG“. Drugi modul namijenjen je za učenje osnova membranskog potencijala.</p>
+  <p><b>Interaktivni dio</b> programa nalazi se na lijevoj strani radnog sučelja i sadrži promjenjive varijable: koncentracije iona Na⁺, K⁺ i Cl⁻ (izražene u mmol/L) u izvanstaničnom prostoru, vodljivost stanične membrane za ione Na⁺, K⁺ i Cl⁻ te temperaturu. Unutarstanične koncentracije prikazane su radi usporedbe i ne mijenjaju se. Kretanje iona kroz membranu u bazičnim fiziološkim uvjetima odvija se na tjelesnoj temperaturi (37 °C).</p>
+  <p><b>Prezentacijski dio</b> programa čini graf u kojem se iscrtavaju linije koje predstavljaju ravnotežne potencijale za ione Na⁺ (plava linija), K⁺ (crvena linija) i Cl⁻ (zelena linija), odnosno membranski potencijal (crna linija) koji predstavlja sumarni rezultat utjecaja propusnosti membrane za ione. Klikom na stavku legende pojedina se linija može sakriti. Iznad grafa prikazuju se brojčane vrijednosti (u mV) membranskog i ravnotežnih potencijala pri trenutačnim vrijednostima promjenjivih varijabli.</p>
+  <figure><img src="assets/slika0202.jpg" alt="Sučelje izvorne vježbe 2"><figcaption>Slika 2.2. Sučelje izvorne verzije vježbe za simulaciju membranskog potencijala.</figcaption></figure>
+  <p><b>Komandni dio</b>: gumb <b>Fiziološki uvjeti</b> vraća promijenjene varijable na početne vrijednosti; gumb <b>Pokreni</b> započinje iscrtavanje linija koje predstavljaju potencijale membrane; gumb <b>Prikaži formulu</b> prikazuje jednadžbu koja je korištena za izračun.</p>
+  <h2>POSTUPAK IZVOĐENJA VJEŽBE</h2>
+  <p>Prije početka izvođenja vježbe studenti bi trebali proučiti očekivane Ishode učenja za drugi modul, pripremiti gradivo na stranici Teorija te se upoznati s načinom izvođenja vježbe. U svrhu učenja, predviđeno je da studenti nakon promjene pojedinih varijabli, u Tablicu 2.1 najprije upišu svoja očekivanja o tome kako će promijenjene varijable utjecati na membranski potencijal, a kako na ravnotežne potencijale. Nakon toga, pokretanjem simulacije studenti će moći provjeriti jesu li ispravno predvidjeli smjer i približnu veličinu promjene.</p>
+  <ol>
+    <li>simulaciju započinjete promjenama koncentracija iona u izvanstaničnom prostoru (gumbi −/+, klizač ili upis vrijednosti); za početak kao predložak možete koristiti vrijednosti navedene u Tablici 2.1 ili kliknuti <b>▶ Postavi</b> u retku tablice;</li>
+    <li>nakon postavljanja željenih koncentracija iona, u tablicu unesite očekivanu vrijednost za membranski potencijal te za ravnotežni potencijal za ione čije su varijable promijenjene;</li>
+    <li>klikom na gumb <b>Pokreni</b> pokreće se iscrtavanje linija koje predstavljaju promjene vrijednosti pojedinih potencijala membrane u vremenu;</li>
+    <li>u tablicu unesite očitane vrijednosti membranskog i ravnotežnog potencijala (ili kliknite <b>⤓ Očitaj</b>);</li>
+    <li>usporedite očekivane i očitane vrijednosti i objasnite opažene razlike;</li>
+    <li>isti postupak ponovite za vodljivosti iona uključenih u simulaciju;</li>
+    <li>po potrebi isto možete ponoviti i za temperaturu tijela;</li>
+    <li>postupak ponavljate za različite vrijednosti i kombinacije promjenjivih varijabli.</li>
+  </ol>
+  <p>Simulacija je dizajnirana na način da se promjena potencijala uspostavlja približno 1000 puta sporije od promjene koja se odvija u realnom vremenu. Gumb <b>Tablica</b> predstavlja „virtualnog voditelja“ čija je zadaća da vas vodi kroz različite unaprijed definirane vrijednosti promjenjivih varijabli, od lakših prema složenijim zadacima.</p>
+</template>
+
+<template id="tpl-results">
+  <span class="draft">Nacrt — ovaj odjeljak u izvornoj verziji nije bio napisan; tekst je pripremljen za pregled autora.</span>
+  <p><b>TUMAČENJE REZULTATA.</b> U fiziološkim uvjetima simulacija daje membranski potencijal od približno −70 mV, ravnotežni potencijal za K⁺ oko −97 mV, za Na⁺ oko +62 mV i za Cl⁻ oko −77 mV. Uočite da je E<sub>m</sub> najbliži E<sub>K</sub> i E<sub>Cl</sub> jer je vodljivost za te ione u mirovanju najveća, a daleko od E<sub>Na</sub> za koji je vodljivost najmanja.</p>
+  <p><b>Promjene izvanstaničnog K⁺ (pokusi 2–4).</b> Smanjenje [K⁺]<sub>iz</sub> na 3 mmol/L hiperpolarizira membranu (E<sub>K</sub> i E<sub>m</sub> postaju negativniji), dok povećanje na 7 odnosno 10 mmol/L depolarizira membranu. Učinak je izrazit jer je K⁺ ion s najvećom vodljivošću, pa membranski potencijal „prati“ E<sub>K</sub>. Upravo je to razlog zbog kojeg hiperkalemija smanjuje podražljivost srca i mišića: depolarizacija inaktivira dio natrijskih voltažnih kanala (vidi Vježbu 3).</p>
+  <p><b>Promjene izvanstaničnog Na⁺ (pokusi 5–6).</b> Povećanje na 160 mmol/L pomiče E<sub>m</sub> za svega ≈ 1,7 mV: vodljivost za Na⁺ u mirovanju je mala. <b>Ali pazite na pokus 5.</b> Smanjenje na 35 mmol/L nije blaga hiponatremija nego vrijednost koja nije spojiva sa životom, i model ondje daje E<sub>m</sub> = −83,5 mV, dakle hiperpolarizaciju od <b>13,2 mV</b> — nikako „zanemarivo“. Pravilo „Na⁺ jedva mijenja E<sub>m</sub>“ vrijedi za <i>fiziološki raspon</i> (≈ 120–150 mmol/L), a ne zato što bi član za Na⁺ u GHK jednadžbi bio nula. Pokus 5 namjerno izlazi iz tog raspona i pokazuje gdje pravilo prestaje vrijediti. Isti zaključak vrijedi za Cl⁻ (pokusi 7–8), uz napomenu da je u ovom modelu E<sub>Cl</sub> blizak E<sub>m</sub> pa se promjene očituju kao manji pomaci.</p>
+  <p><b>Promjene vodljivosti (pokusi 9–11).</b> Povećanje g<sub>Na</sub> s 1 na 2 odnosno 4 depolarizira membranu prema E<sub>Na</sub> iako se ravnotežni potencijali ne mijenjaju — mijenja se samo „težina“ kojom pojedini ion sudjeluje u GHK jednadžbi. Istodobno povećanje g<sub>K</sub> na 45 (pokus 11) vraća E<sub>m</sub> prema E<sub>K</sub>. Zapamtite: <i>koncentracije određuju ravnotežne potencijale, a vodljivosti određuju koji od njih prevladava.</i></p>
+</template>
+
+<template id="tpl-questions">
+  <ol>
+    <li>Objasnite što je membranski potencijal. Koji je prosječni membranski potencijal mirovanja za žive stanice i što ta vrijednost znači? Imaju li sve žive stanice membranski potencijal mirovanja? Nabrojite tkiva u kojima stanice mogu mijenjati svoj potencijal i s kojom svrhom to rade. Što se mora dogoditi u membrani da bi došlo do promjene membranskog potencijala?</li>
+    <li>Razmotrite omjer P<sub>Na</sub>/P<sub>K</sub> u Goldmanovoj jednadžbi i objasnite kakav će učinak na membranski potencijal imati promjene izvanstanične [Na⁺].</li>
+    <li>Ako je membranski potencijal primarno određen raspodjelom K⁺ s obje strane membrane kakav će učinak na membranski potencijal imati promjene izvanstanične [K⁺]?</li>
+    <li>Da li i na koji način povećanje [K⁺] u krvi utječe na podražljivost živaca i mišića?</li>
+  </ol>
+</template>
+
+<template id="tpl-outcomes-en">
+  <h2>After completing this exercise you will be able to:</h2>
+  <ol>
+    <li>explain the concept of the transmembrane potential, describe how it is established across the membrane of a biological cell and name the ions involved</li>
+    <li>list the factors that can change the membrane potential</li>
+    <li>explain the mechanisms responsible for maintaining the negative intracellular potential</li>
+    <li>name and describe the mechanisms by which three factors control ion movement across the membrane</li>
+    <li>analyse the effects of changes in ion concentration on the transmembrane potential</li>
+    <li>determine whether ions will move out of the cell or into it at a given membrane potential and concentration gradient</li>
+    <li>determine the effects of changes in membrane conductance for ions on the membrane potential</li>
+    <li>calculate the equilibrium potential of the ions involved in establishing the membrane potential and judge which ions are, and which are not, in electrochemical equilibrium</li>
+  </ol>
+</template>
+
+<template id="tpl-theory-en">
+  <span class="draft">Draft — this section did not exist in the original; prepared for the authors' review.</span>
+  <p><b>THEORY.</b> All living cells maintain a difference in electrical potential between the intracellular and extracellular space, called the <b><i>membrane potential</i></b> (E<sub>m</sub>). By convention the potential of the extracellular fluid is taken as zero, so the resting membrane potential is negative — roughly −70 to −90 mV in neurons and skeletal muscle fibres, and less negative in other cells (e.g. erythrocytes, epithelial cells). The resting membrane potential results from (1) the unequal distribution of ions across the membrane and (2) the selective permeability of the membrane to individual ions — the same two prerequisites you met in Exercise 1.</p>
+  <p>The unequal ion distribution is created and maintained by the <b>Na⁺/K⁺-ATPase</b> (Na/K pump), which in each cycle expels three Na⁺ from the cell and brings in two K⁺. As a result the intracellular K⁺ concentration is high (about 150 mmol/L) and Na⁺ low (about 14 mmol/L), whereas the extracellular fluid has the opposite pattern (K⁺ ≈ 4–5 mmol/L, Na⁺ ≈ 142 mmol/L). Chloride is present extracellularly at about 109 mmol/L and intracellularly at about 6 mmol/L. Because the pump expels more positive charge than it imports it is <i>electrogenic</i> and contributes a few millivolts directly to the negativity of the potential; its main contribution, however, is indirect — maintaining the concentration gradients.</p>
+  <p>At rest the membrane is most permeable to K⁺, because passive (leak) potassium channels are constantly open. K⁺ therefore leaves the cell down its concentration gradient, and since impermeant intracellular anions (proteins, organic phosphates) remain behind, the inside of the cell becomes negative. The resulting electrical gradient pulls K⁺ back into the cell until the electrical and chemical forces balance — at the potassium equilibrium potential (E<sub>K</sub> ≈ −90 mV, Nernst equation). The resting membrane potential is closer to E<sub>K</sub> than to the sodium equilibrium potential (E<sub>Na</sub> ≈ +60 mV) precisely because the resting K⁺ permeability is many times greater than that for Na⁺ (in the simulation: g<sub>K</sub> = 18, g<sub>Na</sub> = 1, g<sub>Cl</sub> = 10).</p>
+  <p>The resting membrane is not, however, permeable exclusively to K⁺; a small but constant influx of Na⁺ makes the resting potential somewhat less negative than E<sub>K</sub>. The resting potential is therefore calculated with the <b>Goldman-Hodgkin-Katz equation</b>, which takes into account the concentrations and relative permeabilities of all ions to which the membrane is permeable (see the <i>Show formula</i> button in the simulation). Ions whose equilibrium potential equals the membrane potential are in electrochemical equilibrium and carry no net flux (in many cells this is true of Cl⁻); ions whose equilibrium potential differs from E<sub>m</sub> are subject to a <i>driving force</i> proportional to that difference (E<sub>m</sub> − E<sub>ion</sub>), and their net flux would gradually dissipate the gradients were it not for the pump.</p>
+  <p>Two rules follow from the GHK equation, and you will verify them in the simulation. <b>First</b>: a change in the <i>extracellular</i> concentration of an ion changes its equilibrium potential, and the membrane potential changes the more the greater the permeability to that ion — which is why hyperkalaemia markedly depolarises the membrane (E<sub>K</sub> and E<sub>m</sub> rise), while changes in extracellular Na⁺ have little effect on the resting potential. <b>Second</b>: increasing the conductance for an ion shifts E<sub>m</sub> toward that ion's equilibrium potential — raising g<sub>Na</sub> depolarises, raising g<sub>K</sub> hyperpolarises (or stabilises) the membrane. These principles underlie the understanding of the action potential (Exercise 3) and of clinical states such as hyperkalaemia and hypokalaemia, which alter the excitability of cardiac and skeletal muscle.</p>
+</template>
+
+<template id="tpl-howto-en">
+  <p><b>PERFORMING THE EXERCISE.</b> This exercise uses the second of the four PROSIG modules, which teaches the basics of the membrane potential.</p>
+  <p>The <b>interactive part</b> of the program is on the left of the working interface and contains the variables: the concentrations of Na⁺, K⁺ and Cl⁻ (in mmol/L) in the extracellular space, the conductance of the cell membrane for Na⁺, K⁺ and Cl⁻, and the temperature. Intracellular concentrations are shown for comparison and cannot be changed. Under basic physiological conditions ion movement across the membrane takes place at body temperature (37 °C).</p>
+  <p>The <b>presentation part</b> is a graph plotting lines that represent the equilibrium potentials for Na⁺ (blue), K⁺ (red) and Cl⁻ (green) and the membrane potential (black), which is the summed result of the membrane's permeability to the ions. Clicking a legend item hides or shows that line. Above the graph the numerical values (in mV) of the membrane and equilibrium potentials at the current settings are displayed.</p>
+  <figure><img src="assets/slika0202.jpg" alt="Interface of the original exercise 2"><figcaption>Figure 2.2. Interface of the original version of the membrane-potential exercise.</figcaption></figure>
+  <p><b>Command part</b>: the <b>Physiological conditions</b> button returns the variables to their initial values; <b>Run</b> starts plotting the lines representing the membrane potentials; <b>Show formula</b> displays the equation used for the calculation.</p>
+  <h2>PROCEDURE</h2>
+  <p>Before starting, students should study the expected learning outcomes of the second module, prepare the material under Theory and familiarise themselves with the procedure. After changing a variable, students first write in Worksheet 2.1 their expectations of how the change will affect the membrane potential and the equilibrium potentials, and then run the simulation to check whether they predicted the direction and approximate size of the change correctly.</p>
+  <ol>
+    <li>start by changing the extracellular ion concentrations (−/+ buttons, slider or typed value); as a template you can use the values in Worksheet 2.1 or click <b>▶ Apply</b> in a worksheet row;</li>
+    <li>after setting the desired concentrations, enter in the worksheet the expected membrane potential and the expected equilibrium potential of the ions whose variables you changed;</li>
+    <li>click <b>Run</b> to start plotting the lines showing how the individual potentials change over time;</li>
+    <li>enter the observed membrane and equilibrium potentials in the worksheet (or click <b>⤓ Read</b>);</li>
+    <li>compare expected and observed values and explain any differences;</li>
+    <li>repeat the procedure for the conductances of the ions in the simulation;</li>
+    <li>if required, do the same for body temperature;</li>
+    <li>repeat the procedure for different values and combinations of variables.</li>
+  </ol>
+  <p>The simulation is designed so that the potential changes about 1000 times more slowly than in real time. The <b>Worksheet</b> acts as a "virtual instructor", guiding you through predefined values of the variables from easier to more complex tasks.</p>
+</template>
+
+<template id="tpl-results-en">
+  <span class="draft">Draft — this section did not exist in the original; prepared for the authors' review.</span>
+  <p><b>INTERPRETING RESULTS.</b> Under physiological conditions the simulation gives a membrane potential of about −70 mV, a K⁺ equilibrium potential of about −97 mV, Na⁺ about +62 mV and Cl⁻ about −77 mV. Note that E<sub>m</sub> is closest to E<sub>K</sub> and E<sub>Cl</sub>, because the resting conductance for these ions is highest, and far from E<sub>Na</sub>, for which the conductance is lowest.</p>
+  <p><b>Changes in extracellular K⁺ (trials 2–4).</b> Lowering [K⁺]<sub>o</sub> to 3 mmol/L hyperpolarises the membrane (E<sub>K</sub> and E<sub>m</sub> become more negative), while raising it to 7 or 10 mmol/L depolarises it. The effect is pronounced because K⁺ is the ion with the highest conductance, so the membrane potential "follows" E<sub>K</sub>. This is why hyperkalaemia reduces the excitability of heart and muscle: depolarisation inactivates part of the voltage-gated sodium channels (see Exercise 3).</p>
+  <p><b>Changes in extracellular Na⁺ (trials 5–6).</b> Raising it to 160 mmol/L shifts E<sub>m</sub> by only ≈ 1.7 mV: the resting Na⁺ conductance is small. <b>But look closely at trial 5.</b> Lowering it to 35 mmol/L is not mild hyponatraemia but a value incompatible with life, and there the model gives E<sub>m</sub> = −83.5 mV — a hyperpolarisation of <b>13.2 mV</b>, which is anything but negligible. The rule "Na⁺ barely moves E<sub>m</sub>" holds across the <i>physiological range</i> (≈ 120–150 mmol/L), not because the Na⁺ term in the GHK equation is zero. Trial 5 deliberately leaves that range and shows where the rule stops holding. The same conclusion applies to Cl⁻ (trials 7–8), with the note that in this model E<sub>Cl</sub> is close to E<sub>m</sub>, so changes appear as smaller shifts.</p>
+  <p><b>Changes in conductance (trials 9–11).</b> Raising g<sub>Na</sub> from 1 to 2 or 4 depolarises the membrane toward E<sub>Na</sub> even though the equilibrium potentials do not change — only the "weight" of each ion in the GHK equation changes. Simultaneously raising g<sub>K</sub> to 30 (trial 11) pulls E<sub>m</sub> back toward E<sub>K</sub>. Remember: <i>concentrations determine the equilibrium potentials; conductances determine which of them prevails.</i></p>
+</template>
+
+<template id="tpl-questions-en">
+  <ol>
+    <li>Explain what the membrane potential is. What is the average resting membrane potential of living cells and what does that value mean? Do all living cells have a resting membrane potential? List the tissues whose cells can change their potential and for what purpose. What must happen in the membrane for the membrane potential to change?</li>
+    <li>Consider the P<sub>Na</sub>/P<sub>K</sub> ratio in the Goldman equation and explain what effect changes in extracellular [Na⁺] will have on the membrane potential.</li>
+    <li>If the membrane potential is primarily determined by the distribution of K⁺ across the membrane, what effect will changes in extracellular [K⁺] have on it?</li>
+    <li>Does an increase in blood [K⁺] affect the excitability of nerves and muscles, and how?</li>
+  </ol>
+</template>
+
+<script type="module" src="js/v2.js"></script>
+</body>
+</html>

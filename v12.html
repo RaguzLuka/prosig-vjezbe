@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%230b6bcb' stroke-width='5'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%230b6bcb'/%3E%3C/svg%3E">
+<title>PROSIG — Vježba 12: Hemodinamika</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main class="page">
+  <div class="page-head">
+    <div class="kicker"><span data-i18n="nav.ex"></span> 12</div>
+    <h1 data-i18n="ex12"></h1>
+  </div>
+  <div class="purpose" data-lang="hr"><b>SVRHA VJEŽBE</b> je razumjeti što određuje protok krvi: (1) na razini jedne žile <b>Poiseuilleovim zakonom</b> — kako polumjer, duljina, viskoznost i razlika tlakova mijenjaju protok i otpor te zašto je otpor razmjeran <b>1/r⁴</b>; i (2) na razini cijelog krvotoka odnosom <b>MAP ≈ CO × TPR</b> i <b>CO = HR × SV</b> — izračunati nepoznatu veličinu i predvidjeti učinke krvarenja, napora, vazodilatacije i povišenog minutnog volumena.</div>
+  <div class="purpose" data-lang="en"><b>PURPOSE OF THE EXERCISE:</b> to understand what determines blood flow: (1) in a single vessel through <b>Poiseuille's law</b> — how radius, length, viscosity and the pressure gradient change flow and resistance, and why resistance is proportional to <b>1/r⁴</b>; and (2) in the circulation as a whole through <b>MAP ≈ CO × TPR</b> and <b>CO = HR × SV</b> — computing the missing variable and predicting the effects of haemorrhage, exercise, vasodilation and a raised cardiac output.</div>
+  <div id="intro"></div>
+  <div id="modes"></div>
+  <div id="sim" class="sim"></div>
+  <div class="materials-title" data-i18n="materials"></div>
+  <div id="sections"></div>
+</main>
+
+<template id="tpl-key">
+  <ul>
+    <li><b>Poiseuille:</b> Q = ΔP·π·r⁴/(8ηL), otpor R = 8ηL/(πr⁴). Protok je razmjeran <b>četvrtoj potenciji polumjera</b> — udvostručenje r daje 16× veći protok, a suženje od samo 20 % smanji ga na 41 %. Duljina, viskoznost i tlak djeluju linearno.</li>
+    <li><b>Zašto arteriole:</b> upravo zbog r⁴ tijelo protok regulira promjerom arteriola (otporne žile) — na njima pada najveći dio tlaka. Viskoznost mijenja hematokrit: anemija ju snizuje (lakši protok, šumovi), policitemija povisuje (opterećenje srca).</li>
+    <li><b>Krvotok u cjelini:</b> <b>CO = HR × SV</b> i <b>MAP ≈ CO × TPR</b>. Tlak je posljedica protoka i otpora: pri naporu CO raste 3–4×, ali TPR pada, pa MAP poraste tek malo; pri krvarenju refleks podiže HR i TPR i drži MAP normalnim dok kompenzacija ne popusti.</li>
+  </ul>
+</template>
+<template id="tpl-key-en">
+  <ul>
+    <li><b>Poiseuille:</b> Q = ΔP·π·r⁴/(8ηL), resistance R = 8ηL/(πr⁴). Flow is proportional to the <b>fourth power of the radius</b> — doubling r gives 16× the flow, while a mere 20 % narrowing more than halves it. Length, viscosity and pressure act linearly.</li>
+    <li><b>Why arterioles:</b> precisely because of r⁴ the body regulates flow through arteriolar diameter (the resistance vessels) — most of the pressure drop occurs across them. Viscosity is set by the haematocrit: anaemia lowers it (easier flow, murmurs), polycythaemia raises it (cardiac load).</li>
+    <li><b>The circulation as a whole:</b> <b>CO = HR × SV</b> and <b>MAP ≈ CO × TPR</b>. Pressure is the consequence of flow and resistance: in exercise CO rises 3–4× but TPR falls, so MAP rises only slightly; in haemorrhage the reflex raises HR and TPR and holds MAP normal until compensation fails.</li>
+  </ul>
+</template>
+
+<template id="tpl-outcomes">
+  <span class="draft">Nacrt — nova vježba (2026.); pripremljeno za pregled autora.</span>
+  <h2>Nakon obrade ove vježbe moći ćete:</h2>
+  <ul>
+    <li>napisati Poiseuilleov zakon i objasniti značenje svake veličine u njemu te izračunati protok i otpor za zadanu žilu</li>
+    <li>obrazložiti zašto je otpor razmjeran 1/r⁴ i procijeniti učinak zadanog suženja na protok bez računala</li>
+    <li>objasniti zašto su arteriole glavne otporne žile i gdje u krvotoku pada najveći dio tlaka</li>
+    <li>povezati hematokrit s viskoznošću i predvidjeti hemodinamske posljedice anemije i policitemije</li>
+    <li>objasniti nastanak turbulencije (Reynoldsov broj) i zašto se nad stenozom i u anemiji čuju šumovi</li>
+    <li>primijeniti CO = HR × SV i MAP ≈ CO × TPR: izračunati bilo koju nepoznatu veličinu i predvidjeti učinke krvarenja, tjelesnog napora, vazodilatacije i povišenog minutnog volumena</li>
+  </ul>
+</template>
+
+<template id="tpl-theory">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>PROTOK, TLAK I OTPOR.</b> Krv teče iz područja višega u područje nižega tlaka; pokretačka sila nije apsolutni tlak nego <b>razlika tlakova</b> ΔP na krajevima žile. Temeljni odnos je <b>Q = ΔP / R</b> (Ohmov zakon za krvotok). Otpor R nije mjerljiv izravno — izračunava se iz protoka i razlike tlakova, a određen je građom žile i svojstvima krvi.</p>
+  <p><b>POISEUILLEOV ZAKON.</b> Za laminaran tok Newtonove tekućine kroz kruti cilindar vrijedi <b>Q = ΔP · π · r⁴ / (8 · η · L)</b>, odnosno <b>R = 8 · η · L / (π · r⁴)</b>, gdje je r polumjer, L duljina žile, a η viskoznost. Tri su čimbenika linearna (ΔP, L, η), a <b>polumjer ulazi na četvrtu potenciju</b>. Posljedice: udvostručenje polumjera povećava protok 16 puta; smanjenje polumjera za 20 % smanjuje protok na 41 %; prepolovljenje polumjera ostavlja samo 1/16 protoka. Zbog toga tijelo regulira raspodjelu krvi gotovo isključivo promjerom žila, a ne promjenom tlaka — energetski je to neusporedivo učinkovitije. Zakon vrijedi uz pretpostavke laminarnog toka, krute cijevi i newtonovske tekućine; krv je nenewtonovska (viskoznost ovisi o brzini smicanja), a žile su rastezljive, pa je Poiseuilleov zakon dobra <i>aproksimacija</i>, osobito za male žile.</p>
+  <p><b>ZAŠTO ARTERIOLE.</b> Ukupni otpor niza spojenih žila je zbroj (R = R₁ + R₂ + …), a paralelno spojenih manji je od najmanjeg pojedinačnog (1/R = 1/R₁ + 1/R₂ + …). Aorta i velike arterije imaju velik polumjer i zanemariv otpor, pa tlak duž njih jedva pada. <b>Arteriole</b> imaju mali polumjer i debelu glatku mišićnu stijenku kojom aktivno mijenjaju promjer: na njima se troši ≈ 50–60 % ukupnog otpora i tlak pada sa ≈ 80 na ≈ 30 mmHg. Kapilare pojedinačno imaju velik otpor, ali ih je toliko paralelno da im je ukupni otpor umjeren, a mala brzina protoka pogoduje izmjeni tvari.</p>
+  <p><b>VISKOZNOST I HEMATOKRIT.</b> Viskoznost krvi ovisi ponajviše o <b>hematokritu</b>: plazma je ≈ 1,5 puta viskoznija od vode, puna krv pri Hct 45 % ≈ 3,5 puta, a pri Hct 70 % i do 8–10 puta. U <b>anemiji</b> viskoznost pada pa otpor pada i protok raste (uz veći minutni volumen), ali je dostava kisika ipak smanjena jer nedostaje prijenosnika. U <b>policitemiji</b> viskoznost i otpor rastu, srce mora razviti veći tlak, raste opterećenje srca i sklonost trombozi.</p>
+  <p><b>TURBULENCIJA.</b> Pri velikim brzinama tok prestaje biti laminaran. Sklonost turbulenciji opisuje <b>Reynoldsov broj</b> Re = ρ·v·d/η (ρ gustoća, v brzina, d promjer); iznad ≈ 2000 tok postaje vrtložan. Turbulencija stvara zvuk (šum, <i>bruit</i>) i povećava otpor, jer protok tada nije razmjeran ΔP nego približno √ΔP. Zato se šumovi čuju nad <b>stenozama</b> (velika brzina u suženju) i u <b>anemiji</b> (mala viskoznost povisuje Re), a Korotkovljevi zvukovi pri mjerenju tlaka nastaju upravo turbulencijom pod manžetom.</p>
+  <h2>TLAK, MINUTNI VOLUMEN I UKUPNI PERIFERNI OTPOR</h2>
+  <p><b>MINUTNI VOLUMEN.</b> <b>CO = HR × SV</b>: pri HR 72/min i SV 70 mL iznosi ≈ 5 L/min. Udarni volumen ovisi o predopterećenju (venski priljev — Frank-Starlingov mehanizam), kontraktilnosti i naknadnom opterećenju.</p>
+  <p><b>SREDNJI ARTERIJSKI TLAK.</b> Za cijeli je krvotok <b>MAP − CVP = CO × TPR</b>, a budući da je središnji venski tlak malen, u praksi <b>MAP ≈ CO × TPR</b>. TPR je ukupni otpor svih paralelno spojenih organa (≈ 18 mmHg·min/L, odnosno ≈ 1 PRU). MAP se iz izmjerenoga tlaka procjenjuje kao <b>MAP ≈ DBP + (SBP − DBP)/3</b>, jer dijastola traje dulje od sistole. <b>Pulsni tlak</b> (SBP − DBP) ovisi o udarnom volumenu i popustljivosti arterija: uzak je pri hipovolemiji i zatajenju srca, a širok u starijih osoba s krutim arterijama.</p>
+  <p><b>KLINIČKE PRIMJENE.</b> <i>Krvarenje:</i> pada venski priljev i SV; baroreceptorni refleks povisi HR i TPR i MAP ostaje normalan (nadoknađena faza) — zato uredan tlak ne isključuje gubitak krvi; kad gubitak prijeđe ≈ 30 %, CO i MAP padaju (hipovolemijski šok, hladna periferija, uzak pulsni tlak). <i>Tjelesni napor:</i> CO poraste 3–4×, ali vazodilatacija u mišićima snizi TPR, pa MAP poraste tek blago — sistolički mnogo, dijastolički gotovo nimalo. <i>Vazodilatacija</i> (sepsa, antihipertenzivi, anafilaksija): TPR pada brže nego što CO može porasti → hipotenzija uz toplu periferiju (distributivni šok). <i>Povišen CO</i> (hipertireoza, AV fistula, teška anemija): CO raste, TPR refleksno pada, MAP ostaje blizu normale, ali srce trajno radi pojačano. <i>Hipertenzija</i> je najčešće posljedica povišenog TPR uz uredan CO — a povišen TPR je, prema Poiseuilleu, posljedica suženja arteriola.</p>
+</template>
+
+<template id="tpl-howto">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p>Vježba ima tri kartice. <b>Poiseuilleov zakon i otpor žile:</b> klizačima mijenjate polumjer, duljinu, hematokrit (i time viskoznost), razliku tlakova i stupanj stenoze; crtež prikazuje žilu s parabolnim profilom brzine i eritrocitima koji se gibaju svojom lokalnom brzinom, a log-log graf pokazuje da su Q i R ravne crte nagiba +4 i −4 — dokaz četvrte potencije. Tablica desno rastavlja ukupnu promjenu protoka na doprinose pojedinih čimbenika. Okvir <b>„Predvidi pa provjeri“</b> omogućuje da prije očitanja upišete očekivani protok (uz gumb koji zamuti očitanja dok ne predvidite). Prekidač <b>autoregulacija</b> prebacuje model iz „zadan tlak → računaj protok“ u „zadan protok → računaj potrebni tlak“, čime se pokazuje zašto stenoza uz očuvan protok stvara veliku brzinu, turbulenciju i šum.</p>
+  <p><b>Tlak, minutni volumen i TPR:</b> zadajete HR, SV, TPR i popustljivost arterija; shema prikazuje srce, aortu, arteriole (kojima se polumjer mijenja prema TPR-u), kapilare i vene, a ispod nje profil pada tlaka duž krvotoka s pulsnim rasponom u arterijskom dijelu. Klinički scenariji postavljaju gotove kombinacije. <b>Računanje nepoznanica:</b> odaberete koju veličinu računate (CO, HR, SV odnosno MAP, CO, TPR), upišete preostale dvije i dobijete rezultat s uvrštenom formulom; treći kalkulator računa protok i otpor iz Poiseuilleove jednadžbe.</p>
+  <ol>
+    <li>na kartici Poiseuille prođite kliničke slučajeve i za svaki očitajte protok i otpor u odnosu na normalnu žilu;</li>
+    <li>uključite „Sakrij očitanja“, promijenite polumjer i <b>predvidite protok prije nego što ga provjerite</b>;</li>
+    <li>na kartici tlaka usporedite krvarenje, napor i vazodilataciju — pratite CO, TPR i MAP zajedno, nikad samo tlak;</li>
+    <li>riješite vođene zadatke (19); nekoliko ih traži brojčani odgovor (protok, otpor, CO, MAP, TPR).</li>
+  </ol>
+</template>
+
+<template id="tpl-results">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>Normalna žila</b> (r 0,5 mm, L 5 cm, η 3,5, ΔP 5 mmHg): Q = 5,6 mL/min, R = 0,89 mmHg·min/mL, srednja brzina 12 cm/s, Re ≈ 36 (laminarno). <b>Polumjer:</b> r = 1,0 mm → Q = 89,8 mL/min (16×); r = 0,25 mm → Q = 0,35 mL/min (1/16); r −20 % → 41 %. <b>Duljina</b> ×2 → 50 %; <b>ΔP</b> ×2 → 200 %. <b>Anemija</b> (Hct 22 %, η 2,3) → Q = 8,5 mL/min (152 %); <b>policitemija</b> (Hct 65 %, η 6,8) → Q = 2,9 mL/min (51 %). <b>Stenoza 50 %</b> na desetini duljine → R ×2,5, Q = 40 %; <b>stenoza 75 %</b> → R ×26,5, Q = 4 %. Uz autoregulaciju (održan protok) u velikoj arteriji sa stenozom 80 % brzina u suženju poraste na ≈ 440 cm/s, Re ≈ 2100 → turbulencija i šum.</p>
+  <p><b>Krvotok:</b> mirovanje HR 72, SV 70 → CO 5,04 L/min, TPR 18 → MAP 93 mmHg, tlak 116/81, pulsni tlak 35. <b>Nadoknađeno krvarenje</b> (SV 50, HR 90, TPR 20) → CO 4,5, MAP 92 (uredan!), pulsni tlak 25. <b>Teško krvarenje</b> (SV 25, HR 140, TPR 22) → CO 3,5, MAP 79, pulsni tlak 13. <b>Napor</b> (HR 160, SV 110, TPR 6) → CO 17,6, MAP 108, tlak 144/89. <b>Vazodilatacija</b> (TPR 9, CO 7,0) → MAP 65. <b>Povišen CO</b> (CO 9,0, TPR 11) → MAP 101. <b>Zatajenje srca</b> (SV 40, HR 95, TPR 24) → CO 3,8, MAP 93 uz uzak pulsni tlak. Profil tlaka u mirovanju: aorta 91 → velike arterije 77 → arteriole 27 → kapilare 14 → vene 2 mmHg.</p>
+</template>
+
+<template id="tpl-questions">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <ol>
+    <li>Napišite Poiseuilleov zakon i objasnite svaku veličinu. Uz koje pretpostavke vrijedi i zašto je za krv samo približan?</li>
+    <li>Arteriola se suzi za 25 %. Za koliko se promijeni otpor, a za koliko protok (uz nepromijenjen tlak)? Izračunajte bez računala.</li>
+    <li>Zašto se najveći dio tlaka gubi na arteriolama, a ne na kapilarama koje su mnogo uže?</li>
+    <li>Bolesnik ima hematokrit 68 %. Objasnite hemodinamske posljedice i zašto mu je povišen rizik od tromboze.</li>
+    <li>Zašto se šum čuje i nad stenozom karotide i u teškoj anemiji, iako su uzroci suprotni? Uz koju veličinu vežete odgovor?</li>
+    <li>HR je 60/min, SV 80 mL, TPR 20 mmHg·min/L. Izračunajte CO i MAP. Koliki bi bio MAP kad bi se TPR povisio na 25?</li>
+    <li>Bolesnik nakon prometne nesreće ima tlak 120/95, HR 130/min, hladne i blijede udove. Kako tumačite uredan sistolički tlak i uzak pulsni tlak?</li>
+    <li>Objasnite zašto pri tjelesnom naporu minutni volumen poraste 3–4 puta, a srednji arterijski tlak samo malo. Što bi se dogodilo bez vazodilatacije u mišićima?</li>
+    <li>Kod hipertenzije je CO obično uredan. Što je onda povišeno i gdje anatomski leži uzrok?</li>
+  </ol>
+</template>
+
+<template id="tpl-outcomes-en">
+  <span class="draft">Draft — new exercise (2026); prepared for the authors' review.</span>
+  <h2>After completing this exercise you will be able to:</h2>
+  <ul>
+    <li>state Poiseuille's law, explain the meaning of each quantity in it, and calculate flow and resistance for a given vessel</li>
+    <li>explain why resistance is proportional to 1/r⁴ and estimate the effect of a given narrowing on flow without a calculator</li>
+    <li>explain why the arterioles are the main resistance vessels and where most of the pressure is lost in the circulation</li>
+    <li>relate haematocrit to viscosity and predict the haemodynamic consequences of anaemia and polycythaemia</li>
+    <li>explain the origin of turbulence (Reynolds number) and why murmurs are heard over a stenosis and in anaemia</li>
+    <li>apply CO = HR × SV and MAP ≈ CO × TPR: compute any missing variable and predict the effects of haemorrhage, exercise, vasodilation and a raised cardiac output</li>
+  </ul>
+</template>
+
+<template id="tpl-theory-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>FLOW, PRESSURE AND RESISTANCE.</b> Blood flows from a region of higher to one of lower pressure; the driving force is not the absolute pressure but the <b>pressure difference</b> ΔP across the ends of the vessel. The basic relation is <b>Q = ΔP / R</b> (Ohm's law for the circulation). Resistance cannot be measured directly — it is calculated from flow and pressure difference, and is determined by the geometry of the vessel and the properties of the blood.</p>
+  <p><b>POISEUILLE'S LAW.</b> For laminar flow of a Newtonian fluid through a rigid cylinder, <b>Q = ΔP · π · r⁴ / (8 · η · L)</b>, i.e. <b>R = 8 · η · L / (π · r⁴)</b>, where r is the radius, L the length and η the viscosity. Three factors are linear (ΔP, L, η), while the <b>radius enters to the fourth power</b>. Consequences: doubling the radius increases flow 16-fold; reducing the radius by 20 % reduces flow to 41 %; halving the radius leaves only 1/16 of the flow. This is why the body distributes blood almost exclusively by changing vessel diameter rather than pressure — energetically an incomparably more efficient strategy. The law assumes laminar flow, a rigid tube and a Newtonian fluid; blood is non-Newtonian (viscosity depends on shear rate) and vessels are distensible, so Poiseuille's law is a good <i>approximation</i>, particularly for small vessels.</p>
+  <p><b>WHY THE ARTERIOLES.</b> The total resistance of vessels in series is the sum (R = R₁ + R₂ + …), while for vessels in parallel it is smaller than the smallest individual one (1/R = 1/R₁ + 1/R₂ + …). The aorta and large arteries have a large radius and negligible resistance, so pressure hardly falls along them. The <b>arterioles</b> have a small radius and a thick smooth-muscle wall with which they actively change their diameter: they account for ≈ 50–60 % of the total resistance and pressure falls across them from ≈ 80 to ≈ 30 mmHg. Individual capillaries have a high resistance, but so many are in parallel that their combined resistance is moderate, while the low flow velocity favours exchange.</p>
+  <p><b>VISCOSITY AND HAEMATOCRIT.</b> Blood viscosity depends mainly on the <b>haematocrit</b>: plasma is ≈ 1.5 times as viscous as water, whole blood at Hct 45 % ≈ 3.5 times, and at Hct 70 % up to 8–10 times. In <b>anaemia</b> viscosity falls, so resistance falls and flow rises (with a higher cardiac output), yet oxygen delivery is still reduced because carriers are lacking. In <b>polycythaemia</b> viscosity and resistance rise, the heart must generate a higher pressure, cardiac load increases and so does the tendency to thrombosis.</p>
+  <p><b>TURBULENCE.</b> At high velocities flow ceases to be laminar. The tendency to turbulence is described by the <b>Reynolds number</b> Re = ρ·v·d/η (ρ density, v velocity, d diameter); above ≈ 2000 the flow becomes turbulent. Turbulence generates sound (a murmur or <i>bruit</i>) and increases resistance, because flow is then proportional to about √ΔP rather than to ΔP. Hence murmurs over <b>stenoses</b> (high velocity in the narrowing) and in <b>anaemia</b> (low viscosity raises Re), and the Korotkoff sounds of blood-pressure measurement arise from turbulence under the cuff.</p>
+  <h2>PRESSURE, CARDIAC OUTPUT AND TOTAL PERIPHERAL RESISTANCE</h2>
+  <p><b>CARDIAC OUTPUT.</b> <b>CO = HR × SV</b>: at HR 72/min and SV 70 mL it is ≈ 5 L/min. Stroke volume depends on preload (venous return — the Frank–Starling mechanism), contractility and afterload.</p>
+  <p><b>MEAN ARTERIAL PRESSURE.</b> For the circulation as a whole <b>MAP − CVP = CO × TPR</b>, and since the central venous pressure is small, in practice <b>MAP ≈ CO × TPR</b>. TPR is the combined resistance of all organs in parallel (≈ 18 mmHg·min/L, i.e. ≈ 1 PRU). From a measured blood pressure MAP is estimated as <b>MAP ≈ DBP + (SBP − DBP)/3</b>, because diastole lasts longer than systole. The <b>pulse pressure</b> (SBP − DBP) depends on stroke volume and arterial compliance: it is narrow in hypovolaemia and heart failure, and wide in older people with stiff arteries.</p>
+  <p><b>CLINICAL APPLICATIONS.</b> <i>Haemorrhage:</i> venous return and SV fall; the baroreceptor reflex raises HR and TPR and MAP stays normal (the compensated phase) — a normal pressure therefore does not exclude blood loss; once the loss exceeds ≈ 30 %, CO and MAP fall (hypovolaemic shock, cold periphery, narrow pulse pressure). <i>Exercise:</i> CO rises 3–4-fold, but vasodilation in muscle lowers TPR, so MAP rises only slightly — systolic markedly, diastolic hardly at all. <i>Vasodilation</i> (sepsis, antihypertensives, anaphylaxis): TPR falls faster than CO can rise → hypotension with a warm periphery (distributive shock). <i>Raised CO</i> (hyperthyroidism, AV fistula, severe anaemia): CO rises, TPR falls reflexly, MAP stays near normal, but the heart works permanently harder. <i>Hypertension</i> is most often the consequence of a raised TPR with a normal CO — and a raised TPR is, by Poiseuille, the consequence of arteriolar narrowing.</p>
+</template>
+
+<template id="tpl-howto-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p>The exercise has three panels. <b>Poiseuille's law and vascular resistance:</b> sliders change the radius, length, haematocrit (and thus viscosity), pressure difference and degree of stenosis; the drawing shows the vessel with a parabolic velocity profile and red cells moving at their local velocity, while the log-log plot shows Q and R as straight lines of slope +4 and −4 — proof of the fourth power. The table on the right breaks the total change in flow into the contributions of the individual factors. The <b>"Predict, then check"</b> box lets you enter the expected flow before reading it off (with a button that blurs the readouts until you predict). The <b>autoregulation</b> switch turns the model from "pressure given → compute flow" into "flow given → compute the required pressure", showing why a stenosis with maintained flow produces high velocity, turbulence and a bruit.</p>
+  <p><b>Pressure, cardiac output and TPR:</b> you set HR, SV, TPR and arterial compliance; the schematic shows the heart, aorta, arterioles (whose radius follows the TPR), capillaries and veins, and beneath it the profile of the pressure fall along the circulation with the pulse range in the arterial part. Clinical scenarios set ready-made combinations. <b>Solving for the missing variable:</b> choose which quantity to compute (CO, HR, SV or MAP, CO, TPR), enter the other two and obtain the result with the substituted formula; a third calculator computes flow and resistance from Poiseuille's equation.</p>
+  <ol>
+    <li>on the Poiseuille panel go through the clinical cases and for each read the flow and resistance relative to the normal vessel;</li>
+    <li>switch on "Hide the readouts", change the radius and <b>predict the flow before checking it</b>;</li>
+    <li>on the pressure panel compare haemorrhage, exercise and vasodilation — follow CO, TPR and MAP together, never the pressure alone;</li>
+    <li>work through the guided tasks (19); several ask for a numerical answer (flow, resistance, CO, MAP, TPR).</li>
+  </ol>
+</template>
+
+<template id="tpl-results-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>Normal vessel</b> (r 0.5 mm, L 5 cm, η 3.5, ΔP 5 mmHg): Q = 5.6 mL/min, R = 0.89 mmHg·min/mL, mean velocity 12 cm/s, Re ≈ 36 (laminar). <b>Radius:</b> r = 1.0 mm → Q = 89.8 mL/min (16×); r = 0.25 mm → Q = 0.35 mL/min (1/16); r −20 % → 41 %. <b>Length</b> ×2 → 50 %; <b>ΔP</b> ×2 → 200 %. <b>Anaemia</b> (Hct 22 %, η 2.3) → Q = 8.5 mL/min (152 %); <b>polycythaemia</b> (Hct 65 %, η 6.8) → Q = 2.9 mL/min (51 %). <b>50 % stenosis</b> over a tenth of the length → R ×2.5, Q = 40 %; <b>75 % stenosis</b> → R ×26.5, Q = 4 %. With autoregulation (flow maintained) in a large artery with an 80 % stenosis the velocity in the narrowing rises to ≈ 440 cm/s, Re ≈ 2100 → turbulence and a bruit.</p>
+  <p><b>Circulation:</b> rest HR 72, SV 70 → CO 5.04 L/min, TPR 18 → MAP 93 mmHg, pressure 116/81, pulse pressure 35. <b>Compensated haemorrhage</b> (SV 50, HR 90, TPR 20) → CO 4.5, MAP 92 (normal!), pulse pressure 25. <b>Severe haemorrhage</b> (SV 25, HR 140, TPR 22) → CO 3.5, MAP 79, pulse pressure 13. <b>Exercise</b> (HR 160, SV 110, TPR 6) → CO 17.6, MAP 108, pressure 144/89. <b>Vasodilation</b> (TPR 9, CO 7.0) → MAP 65. <b>Raised CO</b> (CO 9.0, TPR 11) → MAP 101. <b>Heart failure</b> (SV 40, HR 95, TPR 24) → CO 3.8, MAP 93 with a narrow pulse pressure. Resting pressure profile: aorta 91 → large arteries 77 → arterioles 27 → capillaries 14 → veins 2 mmHg.</p>
+</template>
+
+<template id="tpl-questions-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <ol>
+    <li>State Poiseuille's law and explain each quantity. Under what assumptions does it hold and why is it only approximate for blood?</li>
+    <li>An arteriole narrows by 25 %. By how much does the resistance change, and by how much the flow (at unchanged pressure)? Work it out without a calculator.</li>
+    <li>Why is most of the pressure lost across the arterioles rather than the capillaries, which are far narrower?</li>
+    <li>A patient has a haematocrit of 68 %. Explain the haemodynamic consequences and why the risk of thrombosis is increased.</li>
+    <li>Why is a murmur heard both over a carotid stenosis and in severe anaemia, although the causes are opposite? Which quantity links the two answers?</li>
+    <li>HR is 60/min, SV 80 mL, TPR 20 mmHg·min/L. Calculate CO and MAP. What would MAP be if TPR rose to 25?</li>
+    <li>After a road accident a patient has a pressure of 120/95, HR 130/min, and cold pale limbs. How do you interpret the normal systolic pressure and the narrow pulse pressure?</li>
+    <li>Explain why cardiac output rises 3–4-fold in exercise while the mean arterial pressure rises only slightly. What would happen without vasodilation in the muscles?</li>
+    <li>In hypertension the cardiac output is usually normal. What, then, is raised, and where does the cause lie anatomically?</li>
+  </ol>
+</template>
+
+<script type="module" src="js/v12.js"></script>
+</body>
+</html>

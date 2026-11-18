@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%230b6bcb' stroke-width='5'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%230b6bcb'/%3E%3C/svg%3E">
+<title>PROSIG — Vježba 8: Neuromuskularna spojnica i skeletni mišić</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main class="page">
+  <div class="page-head">
+    <div class="kicker"><span data-i18n="nav.ex"></span> 8</div>
+    <h1 data-i18n="ex8"></h1>
+  </div>
+  <div class="purpose" data-lang="hr"><b>SVRHA VJEŽBE</b> je pratiti cijeli lanac od akcijskog potencijala motoričkog neurona do kontrakcije: prijenos na neuromuskularnoj spojnici (potencijal završne ploče), sprega podražaja i kontrakcije (oslobađanje Ca²⁺ iz sarkoplazmatskog retikuluma) te mehanika mišića (trzaj, sumacija, tetanus, odnos duljina–sila i sila–brzina) — i razumjeti gdje taj lanac prekidaju miastenija gravis, botulizam i kurare.</div>
+  <div class="purpose" data-lang="en"><b>PURPOSE OF THE EXERCISE:</b> to follow the whole chain from the motor-neuron action potential to contraction: transmission at the neuromuscular junction (end-plate potential), excitation–contraction coupling (Ca²⁺ release from the sarcoplasmic reticulum) and muscle mechanics (twitch, summation, tetanus, length–tension and force–velocity relations) — and to understand where myasthenia gravis, botulism and curare break that chain.</div>
+  <div id="intro"></div>
+  <div id="modes"></div>
+  <div id="sim" class="sim"></div>
+  <div class="materials-title" data-i18n="materials"></div>
+  <div id="sections"></div>
+</main>
+
+<template id="tpl-key">
+  <ul>
+    <li><b>Spojnica:</b> AP → Ca²⁺ u završni gumb → egzocitoza ACh → nikotinski receptori → <b>EPP</b> (≈ 60 mV; do praga treba 40 mV → <b>sigurnosni faktor ≈ 1,5</b>) → mišićni AP. <b>Botulizam</b> prekida oslobađanje (presinaptički), <b>kurare</b> i <b>miastenija</b> smanjuju EPP (postsinaptički); neostigmin pomaže samo potonjima. U miasteniji kontrakcija isprva <i>uspijeva</i> jer EPP još prelazi prag — ali bez rezerve, pa pri ponavljanju izostaje (zamor).</li>
+    <li><b>E-C sprega:</b> mišićni AP → T-tubul → DHPR otvara RyR → Ca²⁺ iz SR → troponin → poprečni mostovi. Latentni period ≈ nekoliko ms.</li>
+    <li><b>Mehanika:</b> sila se stupnjuje frekvencijom (trzaj → sumacija → stopljeni tetanus ≈ 4× trzaj), ovisi o duljini (maksimum pri L₀) i o brzini (Hill: veći teret → sporije; snaga najveća pri ≈ 1/3 F₀).</li>
+  </ul>
+</template>
+<template id="tpl-key-en">
+  <ul>
+    <li><b>Junction:</b> AP → Ca²⁺ into the terminal → ACh exocytosis → nicotinic receptors → <b>EPP</b> (≈ 60 mV; 40 mV needed for threshold → <b>safety factor ≈ 1.5</b>) → muscle AP. <b>Botulism</b> stops release (presynaptic), <b>curare</b> and <b>myasthenia</b> reduce the EPP (postsynaptic); neostigmine helps only the latter. In myasthenia contraction at first <i>succeeds</i> because the EPP still crosses threshold — but with no reserve, so on repetition it fails (fatigue).</li>
+    <li><b>E-C coupling:</b> muscle AP → T-tubule → DHPR opens RyR → Ca²⁺ from the SR → troponin → cross-bridges. Latent period ≈ a few ms.</li>
+    <li><b>Mechanics:</b> force is graded by frequency (twitch → summation → fused tetanus ≈ 4× twitch), depends on length (maximum at L₀) and on velocity (Hill: heavier load → slower; power peaks at ≈ 1/3 F₀).</li>
+  </ul>
+</template>
+
+<template id="tpl-outcomes">
+  <span class="draft">Nacrt — nova vježba (2026.); pripremljeno za pregled autora.</span>
+  <h2>Nakon obrade ove vježbe moći ćete:</h2>
+  <ul>
+    <li>opisati redoslijed događaja na neuromuskularnoj spojnici od dolaska akcijskog potencijala do nastanka potencijala završne ploče (EPP) i objasniti pojam sigurnosnog faktora prijenosa</li>
+    <li>objasniti spregu podražaja i kontrakcije: ulogu T-tubula, dihidropiridinskog i rianodinskog receptora, sarkoplazmatskog retikuluma i troponina</li>
+    <li>razlikovati trzaj, sumaciju, nestopljeni i stopljeni tetanus te objasniti kako mišić stupnjuje silu</li>
+    <li>izmjeriti latentni period i vršnu silu iz zapisa kontrakcije i izračunati omjer tetanus/trzaj</li>
+    <li>protumačiti krivulju duljina–sila (aktivna, pasivna, ukupna) i krivulju sila–brzina te odrediti opterećenje pri kojem je snaga najveća</li>
+    <li>objasniti mehanizam i razlike učinaka miastenije gravis, botulizma i kurarea te predvidjeti djelovanje inhibitora acetilkolinesteraze u svakom od njih</li>
+  </ul>
+</template>
+
+<template id="tpl-theory">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>NEUROMUSKULARNA SPOJNICA.</b> Svako vlakno skeletnog mišića inervira jedan α-motorički neuron na motoričkoj završnoj ploči. Kad akcijski potencijal stigne u završni gumb, depolarizacija otvori <b>naponske Ca²⁺-kanale</b> (tip P/Q); ulazak Ca²⁺ aktivira sinaptotagmin i pokreće stapanje sinaptičkih vezikula s membranom posredovano <b>SNARE-bjelančevinama</b> (sinaptobrevin, SNAP-25, sintaksin). Jedan AP oslobodi oko 100–200 <i>kvanta</i> acetilkolina (jedna vezikula ≈ 10 000 molekula = 1 kvant). ACh difundira kroz pukotinu (≈ 50 nm) i veže se na <b>nikotinske ACh-receptore</b> na vrhovima postsinaptičkih nabora; receptor je ligandom nadzirani kationski kanal čije otvaranje pusti Na⁺ u stanicu (i nešto K⁺ van). Nastala depolarizacija je <b>potencijal završne ploče (EPP)</b>: stupnjevit, lokalni potencijal od ≈ 50–70 mV. Spontano stapanje pojedinačne vezikule daje <i>minijaturni</i> EPP (MEPP) od ≈ 0,5–1 mV — dokaz kvantalne prirode prijenosa (Katz).</p>
+  <p>EPP je znatno veći od ≈ 40 mV potrebnih da se sarkolema depolarizira s −90 mV do praga (≈ −50 mV); omjer EPP/prag nazivamo <b>sigurnosni faktor</b> (≈ 1,5 u čovjeka). Zato svaki živčani impuls u zdravog čovjeka izazove mišićni akcijski potencijal — prijenos je „jedan na jedan“. ACh se u pukotini unutar milisekunde razgrađuje <b>acetilkolinesterazom (AChE)</b> na kolin i acetat; kolin se vraća u završni gumb za ponovnu sintezu. Inhibitori AChE (neostigmin, piridostigmin, edrofonij; organofosfati) produljuju i pojačavaju EPP.</p>
+  <p><b>SPREGA PODRAŽAJA I KONTRAKCIJE.</b> Mišićni AP širi se sarkolemom i uranja u vlakno <b>T-tubulima</b>. U trijadi T-tubul je priljubljen uz terminalne cisterne <b>sarkoplazmatskog retikuluma (SR)</b>. Naponski senzor T-tubula, <b>dihidropiridinski receptor (DHPR)</b>, pri depolarizaciji mijenja konformaciju i <i>mehanički</i> otvara <b>rianodinski receptor (RyR1)</b> u membrani SR — u skeletnom mišiću za to nije potreban ulazak izvanstaničnog Ca²⁺ (za razliku od srca). Ca²⁺ iz SR poraste u sarkoplazmi s ≈ 0,1 na ≈ 10 µmol/L, veže se na <b>troponin C</b>, tropomiozin se pomakne i otkrije vezna mjesta na aktinu; miozinske glave vežu aktin i uz hidrolizu ATP-a „veslaju“ — <b>poprečni mostovi</b>, klizanje filamenata, skraćenje sarkomere. Ca²⁺-ATPaza SR (SERCA) aktivno vraća Ca²⁺ u SR, troponin ga otpušta i mišić se opušta. Vrijeme od podražaja do početka porasta sile — <b>latentni period</b> (≈ 2–10 ms) — obuhvaća sinaptički prijenos, širenje AP, oslobađanje Ca²⁺ i istezanje serijskih elastičnih elemenata.</p>
+  <p><b>TRZAJ, SUMACIJA, TETANUS.</b> Jedan AP daje <b>trzaj</b>: kratak porast i pad sile (≈ 20–100 ms, ovisno o tipu vlakna). Mišićni AP traje samo 2–3 ms, mnogo kraće od trzaja, pa mišić <i>nema refrakterno razdoblje mehanike</i>: novi podražaj koji stigne prije nego što se Ca²⁺ vrati u SR zbraja se s prethodnim — <b>sumacija</b>. Pri višim frekvencijama sila raste i postaje valovita (<b>nestopljeni tetanus</b>), a iznad frekvencije stapanja (≈ 30–60 Hz) Ca²⁺ ostaje trajno povišen i sila je glatka i maksimalna — <b>stopljeni tetanus</b>, 3–5 puta veći od trzaja. Trzaj je manji od tetanusa jer se kratkotrajna aktivacija potroši na istezanje elastičnih elemenata prije nego se svi mostovi uključe. Živčani sustav stupnjuje silu mišića <b>frekvencijom</b> impulsa i <b>brojem</b> aktivnih motoričkih jedinica.</p>
+  <p><b>DULJINA–SILA.</b> Sila koju vlakno može razviti ovisi o preklapanju aktina i miozina (Gordon, Huxley i Julian, 1966.). Na duljini mirovanja (sarkomera ≈ 2,0–2,2 µm, L₀) preklapanje je optimalno i <b>aktivna sila</b> najveća; pri istezanju (silazni krak) preklapanje se smanjuje, pri skraćivanju (uzlazni krak) tanki filamenti se sudaraju, a debeli udaraju u Z-linije. Istezanju se suprotstavlja i <b>pasivna sila</b> elastičnih struktura (titin, vezivo) koja eksponencijalno raste iznad L₀; ukupna sila je zbroj aktivne i pasivne. U tijelu mišići rade blizu L₀ — mjerljivo pravilo: sila stiska šake najveća je u umjerenoj ekstenziji zapešća.</p>
+  <p><b>SILA–BRZINA.</b> Što je opterećenje veće, mišić se skraćuje sporije; pri opterećenju jednakom izometričkoj sili F₀ brzina je nula, a bez opterećenja doseže v<sub>max</sub> (A. V. Hill, 1938.): (F + a)(v + b) = (F₀ + a)·b. Krivulja je hiperbola jer mostovi, koji se odvajaju i ponovno vežu, pri većoj brzini sve manje vremena provode u stanju koje generira silu. <b>Snaga</b> (F·v) je nula na oba kraja i najveća pri ≈ 30 % F₀ i ≈ 30 % v<sub>max</sub>. Pri izduživanju pod teretom (ekscentrična kontrakcija) sila može biti i veća od F₀.</p>
+  <h2>KLINIČKI SLUČAJEVI</h2>
+  <p><b>Miastenija gravis</b> — autoimuna bolest s protutijelima na nikotinske ACh-receptore (rjeđe na MuSK). Protutijela blokiraju receptore, ubrzavaju njihovu razgradnju i aktiviraju komplement koji oštećuje postsinaptičku membranu: broj funkcionalnih receptora pada na trećinu do polovice, nabori postaju plići, a pukotina šira.</p>
+  <div class="box">
+    <div class="box-title">Zašto se miastenični mišić uopće kontrahira ako su receptori uništeni?</div>
+    <p>Zato što zdrava spojnica ima <b>rezervu</b>. Normalni EPP (≈ 60 mV) daleko je veći od depolarizacije potrebne za prag (≈ 40 mV): sigurnosni faktor ≈ 1,5. Gubitak dijela receptora najprije samo troši tu rezervu — EPP padne na, recimo, 45 mV, ali to je <i>još uvijek iznad praga</i>, mišićni AP nastaje i trzaj je normalne veličine (AP je „sve ili ništa“). Zato je miastenični bolesnik ujutro i nakon odmora gotovo normalne snage, a refleksi i pojedinačni pokreti uredni.</p>
+    <p>Problem se pojavljuje <b>pri ponavljanju</b>: svaki AP potroši dio odmah raspoložive zalihe vezikula, pa se količina oslobođenog ACh (i EPP) u prvih nekoliko impulsa smanji za 10–20 %. Zdrava spojnica to ne primijeti (EPP s 60 padne na 50 mV — još iznad praga), a miastenična, koja je već na rubu, padne ispod praga: sve više vlakana prestaje odgovarati, sila pada — <b>zamorljiva slabost</b> i <b>dekrement</b> na repetitivnoj stimulaciji (3 Hz). Nakon odmora zaliha se obnovi i snaga se vrati. Isto vrijedi za nabore: njihov gubitak smanjuje i gustoću Na-kanala oko ploče pa i prag lakše „izmakne“.</p>
+    <p>Inhibitor AChE (piridostigmin) ne vraća receptore, ali dopušta svakom kvantu ACh da dulje djeluje na one preostale — EPP naraste i rezerva se vraća. U vježbi to vidite u animaciji (scenarij miastenija: lanac se <i>ne</i> prekida pri prvom podražaju) i u zadacima 6–8.</p>
+  </div>
+  <p>Klinički: ptoza, diplopija, disfagija i slabost udova koje se pogoršavaju tijekom dana i naporom; dijagnoza protutijelima, repetitivnom stimulacijom i edrofonijskim testom; liječenje inhibitorima AChE, imunosupresivima i timektomijom.</p>
+  <p><b>Botulizam</b> — toksin <i>Clostridium botulinum</i> proteolitički cijepa SNARE-bjelančevine i onemogućuje egzocitozu ACh: <i>presinaptička</i> blokada. Nastaje silazna mlohava paraliza (prvo očni i bulbarni mišići), ugrožena je dišna muskulatura. Inhibitori AChE ne pomažu — nema ACh koji bi se štitio; liječenje je antitoksin i potpora disanju. Isti mehanizam u mikrodozama koristi se terapijski (distonije, spasticitet) i kozmetički.</p>
+  <p><b>Kurare</b> (d-tubokurarin) i nedepolarizirajući mišićni relaksansi (rokuronij) — <i>kompetitivni antagonisti</i> nikotinskog receptora: zauzimaju vezno mjesto, ali ne otvaraju kanal. EPP se smanjuje razmjerno udjelu zauzetih receptora; kad padne ispod praga nastupa mlohava paraliza, a svijest i osjet su očuvani. Budući da je blokada kompetitivna, povećanje koncentracije ACh (neostigmin) je poništava — to je standardni postupak na kraju anestezije. Depolarizirajući relaksansi (sukcinilkolin) djeluju suprotno: trajno depolariziraju ploču pa okolna sarkolema ostaje inaktivirana.</p>
+</template>
+
+<template id="tpl-howto">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>IZVOĐENJE VJEŽBE.</b> Simulacija ima četiri kartice. <b>Animacija</b> prikazuje cijeli lanac događaja korak po korak (8 koraka) u presjeku spojnice i vlakna kakav je u udžbeniku; gumb Pokreni, klizač vremena i gumbi za skok na pojedini korak. Uključivanjem scenarija (miastenija, botulizam, kurare, neostigmin) vidi se gdje se lanac prekida — i zašto se u miasteniji pri prvom podražaju ne prekida. <b>Trzaj i tetanus</b> podražuje živac zadanom frekvencijom i brojem podražaja i crta silu mišića; svaki podražaj prolazi kroz spojnicu (aktivni scenarij utječe na silu!), a program automatski očitava EPP, broj mišićnih AP, vršnu silu, latentni period i stopljenost tetanusa te ispisuje tumačenje u okviru „Što očitavam“. <b>Duljina–sila</b> i <b>Sila–brzina</b> su interaktivne krivulje s klizačem i istim okvirom s tumačenjem.</p>
+  <ol>
+    <li>pogledajte animaciju u cijelosti (zdrava spojnica), zatim je ponovite s uključenim botulizmom, kurareom i miastenijom;</li>
+    <li>riješite vođene zadatke — oni vas vode kroz spojnicu (8 zadataka), mehaniku (4) i krivulje (3);</li>
+    <li>u tablici izmjerite vršnu silu i latentni period za frekvencije 1–60 Hz i odredite frekvenciju stapanja i omjer tetanus/trzaj;</li>
+    <li>na kartici Duljina–sila pronađite duljinu pri kojoj je aktivna sila najveća i duljinu pri kojoj pasivna sila premaši aktivnu;</li>
+    <li>na kartici Sila–brzina odredite opterećenje najveće snage.</li>
+  </ol>
+  <p><b>Račun.</b> Latentni period = t(početak porasta sile) − t(podražaj). Omjer tetanus/trzaj = vršna sila stopljenog tetanusa / vršna sila trzaja. Snaga = sila × brzina.</p>
+</template>
+
+<template id="tpl-results">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>Spojnica.</b> U zdravoj spojnici EPP iznosi ≈ 60 mV pa svaki podražaj, i pri 50 Hz, izazove mišićni AP. Kurare prepolovi EPP (≈ 30 mV — ispod praga), a neostigmin ga vrati iznad praga: kompetitivna blokada je reverzibilna. Botulizam svede EPP na ≈ 5 mV bez obzira na neostigmin: presinaptička blokada. Miastenija: EPP ≈ 45 mV — prvi podražaji uspiju, ali pri 3 Hz dekrement ruši EPP ispod praga od 4. podražaja; neostigmin (EPP ≈ 75 mV) uklanja dekrement.</p>
+  <p><b>Mehanika.</b> Trzaj ≈ 2 N s latentnim periodom ≈ 3 ms. Pri 10 Hz sila se zbraja (≈ 2,4 N), pri 20 Hz nestopljeni tetanus (≈ 3,8 N, valovitost ≈ 40 %), pri 40 Hz gotovo stopljen (≈ 7 N), pri 60 Hz stopljen (≈ 8,8 N, valovitost 2 %) — omjer tetanus/trzaj ≈ 4. U miasteniji pri 3 Hz nakon prvih trzaja podražaji ostaju bez odgovora.</p>
+  <p><b>Krivulje.</b> Aktivna sila je 100 % na platou 0,95–1,1 L₀, ≈ 40 % pri 1,5 L₀ i ≈ 40 % pri 0,7 L₀; pasivna sila premaši aktivnu iznad ≈ 1,55 L₀. Brzina skraćivanja pada hiperbolički s opterećenjem; snaga je najveća pri ≈ 3 N = 30 % F₀.</p>
+</template>
+
+<template id="tpl-questions">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <ol>
+    <li>Nabrojite redom događaje od akcijskog potencijala u aksonu do skraćenja sarkomere. Na kojem mjestu djeluje botulinum toksin, na kojem kurare, a na kojem protutijela u miasteniji gravis?</li>
+    <li>Što je sigurnosni faktor neuromuskularnog prijenosa i zašto miastenični bolesnik slabi tijekom dana, a zdrav čovjek pri jednakom naporu ne?</li>
+    <li>Zašto inhibitor acetilkolinesteraze pomaže u miasteniji i pri otrovanju kurareom, a ne pomaže u botulizmu?</li>
+    <li>Zašto se trzaji mogu zbrajati iako se akcijski potencijali ne mogu? Što ograničava silu trzaja u odnosu na tetanus?</li>
+    <li>Iz zapisa trzaja odredite latentni period i objasnite koji procesi u njemu sudjeluju.</li>
+    <li>Objasnite oblik krivulje duljina–sila molekularnim mehanizmom. Zašto je ukupna sila pri velikom istezanju veća od aktivne?</li>
+    <li>Pri kojem je opterećenju snaga mišića najveća i kako to objašnjava izbor prijenosa na biciklu ili ritma pri dizanju tereta?</li>
+  </ol>
+</template>
+
+<template id="tpl-outcomes-en">
+  <span class="draft">Draft — new exercise (2026); prepared for the authors' review.</span>
+  <h2>After completing this exercise you will be able to:</h2>
+  <ul>
+    <li>describe the sequence of events at the neuromuscular junction from the arrival of the action potential to the end-plate potential (EPP) and explain the safety factor of transmission</li>
+    <li>explain excitation–contraction coupling: the roles of the T-tubule, the dihydropyridine and ryanodine receptors, the sarcoplasmic reticulum and troponin</li>
+    <li>distinguish twitch, summation, unfused and fused tetanus and explain how muscle grades force</li>
+    <li>measure the latent period and peak force from a contraction record and calculate the tetanus/twitch ratio</li>
+    <li>interpret the length–tension curve (active, passive, total) and the force–velocity curve and find the load at which power is greatest</li>
+    <li>explain the mechanisms and differences of myasthenia gravis, botulism and curare and predict the effect of an acetylcholinesterase inhibitor in each</li>
+  </ul>
+</template>
+
+<template id="tpl-theory-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>THE NEUROMUSCULAR JUNCTION.</b> Each skeletal muscle fibre is innervated by one α-motor neuron at the motor end-plate. When an action potential reaches the terminal, depolarisation opens <b>voltage-gated Ca²⁺ channels</b> (P/Q type); Ca²⁺ entry activates synaptotagmin and triggers fusion of synaptic vesicles with the membrane mediated by <b>SNARE proteins</b> (synaptobrevin, SNAP-25, syntaxin). One AP releases about 100–200 <i>quanta</i> of acetylcholine (one vesicle ≈ 10 000 molecules = 1 quantum). ACh diffuses across the cleft (≈ 50 nm) and binds <b>nicotinic ACh receptors</b> on the crests of the postsynaptic folds; the receptor is a ligand-gated cation channel whose opening lets Na⁺ into the cell (and some K⁺ out). The resulting depolarisation is the <b>end-plate potential (EPP)</b>: a graded, local potential of ≈ 50–70 mV. Spontaneous fusion of a single vesicle gives a <i>miniature</i> EPP (MEPP) of ≈ 0.5–1 mV — the evidence for the quantal nature of transmission (Katz).</p>
+  <p>The EPP is much larger than the ≈ 40 mV needed to depolarise the sarcolemma from −90 mV to threshold (≈ −50 mV); the ratio EPP/threshold is the <b>safety factor</b> (≈ 1.5 in humans). Hence every nerve impulse in a healthy person evokes a muscle action potential — transmission is "one to one". ACh in the cleft is hydrolysed within a millisecond by <b>acetylcholinesterase (AChE)</b> into choline and acetate; choline is taken back into the terminal for resynthesis. AChE inhibitors (neostigmine, pyridostigmine, edrophonium; organophosphates) prolong and enlarge the EPP.</p>
+  <p><b>EXCITATION–CONTRACTION COUPLING.</b> The muscle AP spreads along the sarcolemma and dives into the fibre through the <b>T-tubules</b>. In the triad the T-tubule lies against the terminal cisternae of the <b>sarcoplasmic reticulum (SR)</b>. The T-tubule voltage sensor, the <b>dihydropyridine receptor (DHPR)</b>, changes conformation on depolarisation and <i>mechanically</i> opens the <b>ryanodine receptor (RyR1)</b> in the SR membrane — in skeletal muscle no extracellular Ca²⁺ entry is needed (unlike the heart). Ca²⁺ from the SR rises in the sarcoplasm from ≈ 0.1 to ≈ 10 µmol/L, binds <b>troponin C</b>, tropomyosin moves and uncovers the binding sites on actin; myosin heads bind actin and, hydrolysing ATP, "row" — <b>cross-bridges</b>, filament sliding, sarcomere shortening. The SR Ca²⁺-ATPase (SERCA) actively pumps Ca²⁺ back into the SR, troponin releases it and the muscle relaxes. The time from stimulus to the onset of force — the <b>latent period</b> (≈ 2–10 ms) — covers synaptic transmission, AP propagation, Ca²⁺ release and the stretching of series elastic elements.</p>
+  <p><b>TWITCH, SUMMATION, TETANUS.</b> One AP produces a <b>twitch</b>: a brief rise and fall of force (≈ 20–100 ms depending on fibre type). The muscle AP lasts only 2–3 ms, far shorter than the twitch, so muscle <i>has no mechanical refractory period</i>: a new stimulus arriving before Ca²⁺ has been returned to the SR adds to the previous one — <b>summation</b>. At higher frequencies force grows and becomes rippled (<b>unfused tetanus</b>); above the fusion frequency (≈ 30–60 Hz) Ca²⁺ stays permanently elevated and force is smooth and maximal — <b>fused tetanus</b>, 3–5 times the twitch. The twitch is smaller than the tetanus because the brief activation is spent stretching the elastic elements before all cross-bridges engage. The nervous system grades muscle force by impulse <b>frequency</b> and by the <b>number</b> of active motor units.</p>
+  <p><b>LENGTH–TENSION.</b> The force a fibre can develop depends on actin–myosin overlap (Gordon, Huxley and Julian, 1966). At resting length (sarcomere ≈ 2.0–2.2 µm, L₀) overlap is optimal and <b>active force</b> maximal; on stretching (descending limb) overlap decreases, on shortening (ascending limb) the thin filaments collide and the thick filaments hit the Z-lines. Stretching is also opposed by the <b>passive force</b> of elastic structures (titin, connective tissue), which rises exponentially beyond L₀; total force is the sum of active and passive. In the body muscles work close to L₀ — a measurable rule: grip strength is greatest with the wrist in moderate extension.</p>
+  <p><b>FORCE–VELOCITY.</b> The heavier the load, the more slowly the muscle shortens; at a load equal to the isometric force F₀ velocity is zero, and with no load it reaches v<sub>max</sub> (A. V. Hill, 1938): (F + a)(v + b) = (F₀ + a)·b. The curve is a hyperbola because cross-bridges, detaching and re-attaching, spend less and less time in the force-generating state at higher velocity. <b>Power</b> (F·v) is zero at both ends and greatest at ≈ 30 % F₀ and ≈ 30 % v<sub>max</sub>. During lengthening under load (eccentric contraction) force can exceed F₀.</p>
+  <h2>CLINICAL CASES</h2>
+  <p><b>Myasthenia gravis</b> — an autoimmune disease with antibodies against nicotinic ACh receptors (less often MuSK). The antibodies block the receptors, accelerate their degradation and activate complement, which damages the postsynaptic membrane: the number of functional receptors falls to a third or a half, the folds become shallower and the cleft wider.</p>
+  <div class="box">
+    <div class="box-title">Why does a myasthenic muscle contract at all if the receptors are destroyed?</div>
+    <p>Because a healthy junction has a <b>reserve</b>. The normal EPP (≈ 60 mV) is far larger than the depolarisation needed for threshold (≈ 40 mV): safety factor ≈ 1.5. Losing part of the receptors at first only uses up that reserve — the EPP drops to, say, 45 mV, but that is <i>still above threshold</i>, a muscle AP fires and the twitch is of normal size (the AP is "all or none"). That is why a myasthenic patient has nearly normal strength in the morning and after rest, with normal reflexes and single movements.</p>
+    <p>The trouble appears <b>on repetition</b>: every AP uses part of the readily releasable vesicle pool, so the amount of ACh released (and the EPP) falls by 10–20 % over the first few impulses. A healthy junction does not notice (the EPP drops from 60 to 50 mV — still above threshold); a myasthenic one, already at the edge, falls below threshold: more and more fibres stop responding, force declines — <b>fatigable weakness</b> and the <b>decrement</b> on repetitive stimulation (3 Hz). After rest the pool refills and strength returns. The loss of folds adds to this: it also reduces the density of Na channels around the end-plate, so threshold is missed more easily.</p>
+    <p>An AChE inhibitor (pyridostigmine) does not restore receptors, but lets every quantum of ACh act longer on those that remain — the EPP grows and the reserve returns. In the exercise you see this in the animation (myasthenia scenario: the chain is <i>not</i> broken at the first stimulus) and in tasks 6–8.</p>
+  </div>
+  <p>Clinically: ptosis, diplopia, dysphagia and limb weakness that worsen through the day and with effort; diagnosis by antibodies, repetitive stimulation and the edrophonium test; treatment with AChE inhibitors, immunosuppression and thymectomy.</p>
+  <p><b>Botulism</b> — the <i>Clostridium botulinum</i> toxin proteolytically cleaves SNARE proteins and prevents ACh exocytosis: a <i>presynaptic</i> block. A descending flaccid paralysis results (ocular and bulbar muscles first), threatening the respiratory muscles. AChE inhibitors do not help — there is no ACh to protect; treatment is antitoxin and ventilatory support. The same mechanism in microdoses is used therapeutically (dystonia, spasticity) and cosmetically.</p>
+  <p><b>Curare</b> (d-tubocurarine) and non-depolarising muscle relaxants (rocuronium) — <i>competitive antagonists</i> of the nicotinic receptor: they occupy the binding site without opening the channel. The EPP falls in proportion to the fraction of occupied receptors; once below threshold flaccid paralysis follows, with consciousness and sensation preserved. Because the block is competitive, raising the ACh concentration (neostigmine) reverses it — the standard procedure at the end of anaesthesia. Depolarising relaxants (succinylcholine) act oppositely: they depolarise the end-plate persistently so the surrounding sarcolemma stays inactivated.</p>
+</template>
+
+<template id="tpl-howto-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>PERFORMING THE EXERCISE.</b> The simulation has four panels. <b>Animation</b> shows the whole chain of events step by step (8 steps) in a textbook-style cross-section of the junction and fibre; Play button, time slider and buttons to jump to a step. Switching on a scenario (myasthenia, botulism, curare, neostigmine) shows where the chain breaks — and why in myasthenia it does not break at the first stimulus. <b>Twitch and tetanus</b> stimulates the nerve at a set frequency and number of stimuli and plots muscle force; every stimulus passes through the junction (the active scenario affects force!), and the program automatically reads the EPP, the number of muscle APs, peak force, latent period and tetanus fusion, and writes an interpretation in the "What the record shows" box. <b>Length–tension</b> and <b>Force–velocity</b> are interactive curves with a slider and the same interpretation box.</p>
+  <ol>
+    <li>watch the complete animation (healthy junction), then repeat it with botulism, curare and myasthenia switched on;</li>
+    <li>work through the guided tasks — they take you through the junction (8 tasks), mechanics (4) and the curves (3);</li>
+    <li>in the worksheet measure peak force and latent period for 1–60 Hz and determine the fusion frequency and the tetanus/twitch ratio;</li>
+    <li>on the Length–tension panel find the length of maximal active force and the length at which passive force exceeds active force;</li>
+    <li>on the Force–velocity panel find the load of maximal power.</li>
+  </ol>
+  <p><b>Calculations.</b> Latent period = t(onset of force rise) − t(stimulus). Tetanus/twitch ratio = peak force of fused tetanus / peak force of twitch. Power = force × velocity.</p>
+</template>
+
+<template id="tpl-results-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>Junction.</b> In a healthy junction the EPP is ≈ 60 mV, so every stimulus, even at 50 Hz, evokes a muscle AP. Curare halves the EPP (≈ 30 mV — below threshold) and neostigmine brings it back above threshold: competitive block is reversible. Botulism reduces the EPP to ≈ 5 mV regardless of neostigmine: presynaptic block. Myasthenia: EPP ≈ 45 mV — the first stimuli succeed, but at 3 Hz the decrement pushes the EPP below threshold from the 4th stimulus; neostigmine (EPP ≈ 75 mV) abolishes the decrement.</p>
+  <p><b>Mechanics.</b> Twitch ≈ 2 N with a latent period ≈ 3 ms. At 10 Hz force summates (≈ 2.4 N), at 20 Hz unfused tetanus (≈ 3.8 N, ripple ≈ 40 %), at 40 Hz almost fused (≈ 7 N), at 60 Hz fused (≈ 8.8 N, ripple 2 %) — tetanus/twitch ratio ≈ 4. In myasthenia at 3 Hz, after the first twitches the stimuli go unanswered.</p>
+  <p><b>Curves.</b> Active force is 100 % on the plateau 0.95–1.1 L₀, ≈ 40 % at 1.5 L₀ and ≈ 40 % at 0.7 L₀; passive force exceeds active force above ≈ 1.55 L₀. Shortening velocity falls hyperbolically with load; power peaks at ≈ 3 N = 30 % F₀.</p>
+</template>
+
+<template id="tpl-questions-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <ol>
+    <li>List in order the events from the action potential in the axon to sarcomere shortening. Where does botulinum toxin act, where curare, and where the antibodies of myasthenia gravis?</li>
+    <li>What is the safety factor of neuromuscular transmission and why does a myasthenic patient weaken during the day while a healthy person does not at the same effort?</li>
+    <li>Why does an acetylcholinesterase inhibitor help in myasthenia and in curare poisoning but not in botulism?</li>
+    <li>Why can twitches summate although action potentials cannot? What limits twitch force relative to tetanus?</li>
+    <li>Determine the latent period from a twitch record and explain which processes contribute to it.</li>
+    <li>Explain the shape of the length–tension curve by its molecular mechanism. Why is total force at large stretch greater than active force?</li>
+    <li>At which load is muscle power greatest, and how does this explain gear choice on a bicycle or cadence when lifting a load?</li>
+  </ol>
+</template>
+
+<script type="module" src="js/v8.js"></script>
+</body>
+</html>

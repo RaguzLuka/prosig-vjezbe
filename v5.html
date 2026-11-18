@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%230b6bcb' stroke-width='5'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%230b6bcb'/%3E%3C/svg%3E">
+<title>PROSIG — Vježba 5: Naponsko prikliještenje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main class="page">
+  <div class="page-head">
+    <div class="kicker"><span data-i18n="nav.ex"></span> 5 · <span data-lang="hr">dodatni modul</span><span data-lang="en">extra module</span></div>
+    <h1 data-i18n="ex5"></h1>
+  </div>
+  <div class="purpose" data-lang="hr"><b>SVRHA MODULA</b> je prikazati što se „ispod“ krivulje akcijskog potencijala događa s ionskim strujama (I<sub>Na</sub>, I<sub>K</sub>) i varijablama vrata Hodgkin-Huxleyjeva modela (m, h, n) pri zadanim koncentracijama iona i zadanom podražaju. Modul je u izvornoj verziji postojao, ali nije bio povezan s naslovnicom.</div>
+  <div class="purpose" data-lang="en"><b>PURPOSE OF THE MODULE:</b> to show what happens "beneath" the action-potential curve to the ionic currents (I<sub>Na</sub>, I<sub>K</sub>) and the gate variables of the Hodgkin-Huxley model (m, h, n) for given ion concentrations and a given stimulus. The module existed in the original version but was not linked from the home page.</div>
+  <div id="intro"></div>
+  <div id="modes"></div>
+  <div class="sim" id="sim"></div>
+  <div class="materials-title" data-i18n="materials"></div>
+  <div id="sections"></div>
+</main>
+
+<template id="tpl-key">
+  <ul>
+    <li>Ispod krivulje AP kriju se dvije struje: <b>I<sub>Na</sub></b> (ulazna, depolarizira) i <b>I<sub>K</sub></b> (izlazna, repolarizira).</li>
+    <li>Hodgkin-Huxleyjeve varijable vrata: <b>m</b> — aktivacija Na-kanala (brza), <b>h</b> — inaktivacija Na-kanala (h → 0 tijekom vrška), <b>n</b> — aktivacija K-kanala (spora).</li>
+    <li>Koncentracije mijenjaju ravnotežne potencijale: manje Na⁺ izvana → <b>niži vršak</b>; više K⁺ izvana (ili manje unutra) → <b>depolariziran potencijal mirovanja</b>.</li>
+  </ul>
+</template>
+<template id="tpl-key-en">
+  <ul>
+    <li>Beneath the AP curve lie two currents: <b>I<sub>Na</sub></b> (inward, depolarises) and <b>I<sub>K</sub></b> (outward, repolarises).</li>
+    <li>Hodgkin-Huxley gate variables: <b>m</b> — Na-channel activation (fast), <b>h</b> — Na-channel inactivation (h → 0 during the peak), <b>n</b> — K-channel activation (slow).</li>
+    <li>Concentrations change the equilibrium potentials: less extracellular Na⁺ → <b>lower peak</b>; more extracellular K⁺ (or less intracellular) → <b>depolarised resting potential</b>.</li>
+  </ul>
+</template>
+
+<template id="tpl-outcomes">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <ul>
+    <li>povezati tijek akcijskog potencijala s vremenskim tijekom natrijske i kalijske struje</li>
+    <li>opisati značenje varijabli m, h i n u Hodgkin-Huxleyjevu modelu i njihov odnos prema stanjima kanala (aktivacija, inaktivacija, deaktivacija)</li>
+    <li>predvidjeti kako promjene unutarstaničnih i izvanstaničnih koncentracija Na⁺ i K⁺ mijenjaju ravnotežne potencijale, potencijal mirovanja i amplitudu AP</li>
+  </ul>
+</template>
+
+<template id="tpl-howto">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p>Za razliku od prethodnih vježbi, ovdje se cijeli zapis od 30 ms izračunava odjednom pri svakoj promjeni parametara. Podražaj se primjenjuje u trenutku 0,5 ms (oznaka S na grafu). Povećavajte <b>struju</b> ili <b>napon</b> podražaja dok ne nastane akcijski potencijal, zatim u legendi uključite ili isključite pojedine krivulje i promatrajte: (1) I<sub>Na</sub> (ulazna, u grafu pozitivna) prethodi vršku AP, a I<sub>K</sub> (izlazna) ga slijedi; (2) varijabla <b>m</b> raste gotovo trenutno s depolarizacijom, <b>h</b> pada (inaktivacija) i oporavlja se tek nakon repolarizacije, a <b>n</b> raste sporo i ostaje povišen tijekom hiperpolarizacije.</p>
+  <p>Zatim mijenjajte koncentracije: snižavanje [K⁺]<sub>unutar</sub> ili povišenje [K⁺]<sub>izvan</sub> depolarizira potencijal mirovanja; snižavanje [Na⁺]<sub>izvan</sub> snižava E<sub>Na</sub> i vršak AP.</p>
+</template>
+
+<template id="tpl-questions">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <ol>
+    <li>Zašto I<sub>Na</sub> doseže vršak prije vrška akcijskog potencijala, a I<sub>K</sub> nakon njega?</li>
+    <li>Što znači da je varijabla h tijekom vrška AP blizu nule? Kako se to odražava na podražljivost membrane (usporedite s Vježbom 4)?</li>
+    <li>Kako se vršak AP mijenja sniženjem izvanstaničnog Na⁺ sa 142 na 120 mmol/L? Objasnite pomoću Nernstove jednadžbe.</li>
+  </ol>
+</template>
+
+<template id="tpl-outcomes-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <ul>
+    <li>relate the time course of the action potential to the time course of the sodium and potassium currents</li>
+    <li>describe the meaning of the variables m, h and n in the Hodgkin-Huxley model and their relation to channel states (activation, inactivation, deactivation)</li>
+    <li>predict how changes in intracellular and extracellular Na⁺ and K⁺ concentrations alter the equilibrium potentials, the resting potential and the AP amplitude</li>
+  </ul>
+</template>
+
+<template id="tpl-howto-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p>Unlike the previous exercises, here the entire 30 ms record is computed at once whenever a parameter changes. The stimulus is applied at 0.5 ms (marked S on the graph). Increase the stimulus <b>current</b> or <b>voltage</b> until an action potential appears, then switch individual curves on and off in the legend and observe: (1) I<sub>Na</sub> (inward, plotted positive) precedes the AP peak and I<sub>K</sub> (outward) follows it; (2) the variable <b>m</b> rises almost instantaneously with depolarisation, <b>h</b> falls (inactivation) and recovers only after repolarisation, while <b>n</b> rises slowly and remains elevated during the hyperpolarisation.</p>
+  <p>Then vary the concentrations: lowering [K⁺]<sub>in</sub> or raising [K⁺]<sub>out</sub> depolarises the resting potential; lowering [Na⁺]<sub>out</sub> lowers E<sub>Na</sub> and the AP peak.</p>
+</template>
+
+<template id="tpl-questions-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <ol>
+    <li>Why does I<sub>Na</sub> peak before the peak of the action potential, and I<sub>K</sub> after it?</li>
+    <li>What does it mean that the variable h is close to zero at the AP peak? How does this affect membrane excitability (compare with Exercise 4)?</li>
+    <li>How does the AP peak change when extracellular Na⁺ is lowered from 142 to 120 mmol/L? Explain using the Nernst equation.</li>
+  </ol>
+</template>
+
+<script type="module" src="js/v5.js"></script>
+</body>
+</html>

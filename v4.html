@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%230b6bcb' stroke-width='5'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%230b6bcb'/%3E%3C/svg%3E">
+<title>PROSIG — Vježba 4: Podražljivost i nepodražljivost</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main class="page">
+  <div class="page-head">
+    <div class="kicker"><span data-i18n="nav.ex"></span> 4</div>
+    <h1 data-i18n="ex4"></h1>
+  </div>
+  <div class="purpose" data-lang="hr"><b>SVRHA VJEŽBE</b> je uz pomoć simulacijskog programa PROSIG analizirati promjene podražljivosti membrane tijekom i neposredno nakon akcijskog potencijala te odrediti apsolutno i relativno refrakterno razdoblje primjenom dvaju podražaja u različitim vremenskim razmacima.</div>
+  <div class="purpose" data-lang="en"><b>PURPOSE OF THE EXERCISE:</b> using the PROSIG simulation program, to analyse the changes in membrane excitability during and immediately after an action potential and to determine the absolute and relative refractory periods by applying two stimuli at different time intervals.</div>
+  <div id="intro"></div>
+  <div id="modes"></div>
+  <div class="sim" id="sim"></div>
+  <div class="materials-title" data-i18n="materials"></div>
+  <div id="sections"></div>
+</main>
+
+<template id="tpl-key">
+  <ul>
+    <li>Tijekom i neposredno nakon akcijskog potencijala membrana je <b>refrakterna</b> — ne može se (ili se teže može) ponovno podražiti.</li>
+    <li><b>Apsolutno</b> refrakterno razdoblje: Na-kanali su inaktivirani (varijabla <b>h ≈ 0</b>) — ni najjači podražaj ne pomaže. <b>Relativno</b>: dio kanala se oporavio — AP izaziva samo <b>jači</b> podražaj i manji je.</li>
+    <li>Refrakternost ograničava <b>najveću frekvenciju</b> impulsa i osigurava <b>jednosmjerno</b> širenje akcijskog potencijala.</li>
+  </ul>
+</template>
+<template id="tpl-key-en">
+  <ul>
+    <li>During and immediately after an action potential the membrane is <b>refractory</b> — it cannot (or can only with difficulty) be re-excited.</li>
+    <li><b>Absolute</b> refractory period: Na channels are inactivated (variable <b>h ≈ 0</b>) — even the strongest stimulus fails. <b>Relative</b>: some channels have recovered — only a <b>stronger</b> stimulus evokes an AP, and a smaller one.</li>
+    <li>Refractoriness limits the <b>maximum impulse frequency</b> and ensures <b>one-way</b> propagation of the action potential.</li>
+  </ul>
+</template>
+
+<template id="tpl-outcomes">
+  <span class="draft">Nacrt — sadržaj vježbe 4 u izvornoj verziji nije bio napisan; pripremljeno za pregled autora.</span>
+  <h2>Nakon obrade ove vježbe moći ćete:</h2>
+  <ul>
+    <li>definirati pojmove podražljivost i nepodražljivost (refrakternost) membrane</li>
+    <li>razlikovati apsolutno i relativno refrakterno razdoblje i povezati ih s fazama akcijskog potencijala</li>
+    <li>objasniti molekularnu osnovu refrakternosti — inaktivaciju Na-voltažnih kanala i produljenu aktivaciju K-voltažnih kanala</li>
+    <li>eksperimentalno odrediti trajanje refrakternih razdoblja metodom dvostrukog podražaja</li>
+    <li>objasniti kako refrakternost ograničava najveću frekvenciju akcijskih potencijala i osigurava jednosmjerno širenje impulsa</li>
+  </ul>
+</template>
+
+<template id="tpl-theory">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>TEORIJSKI DIO.</b> Podražljivost membrane nije stalna veličina: tijekom akcijskog potencijala i kratko nakon njega membrana se privremeno ne može ponovno podražiti ili je za to potreban jači podražaj. To razdoblje smanjene podražljivosti nazivamo <b><i>refrakterno razdoblje</i></b>, a razlikujemo dva dijela.</p>
+  <p><b>Apsolutno refrakterno razdoblje</b> traje od trenutka dosizanja praga do približno sredine repolarizacije. U tom razdoblju ni najjači podražaj ne može izazvati novi akcijski potencijal. Razlog je stanje Na-voltažnih kanala: nakon aktivacije njihova se inaktivacijska vrata zatvaraju i kanali ostaju inaktivirani sve dok se membrana ne repolarizira do približno −50 mV. Inaktivirani kanal ne može se ponovno otvoriti depolarizacijom — mora se najprije „resetirati“ (deaktivirati) povratkom potencijala prema vrijednosti mirovanja.</p>
+  <p><b>Relativno refrakterno razdoblje</b> slijedi nakon apsolutnog i traje do kraja hiperpolarizacije. Dio Na-voltažnih kanala već je vraćen u mirujuće stanje pa je akcijski potencijal moguće izazvati, ali samo <i>jačim</i> podražajem nego u mirovanju. Dva su razloga: (1) još nisu svi Na-kanali dostupni pa je ulazna struja Na⁺ manja, a (2) K-voltažni kanali su još otvoreni pa povećana izlazna struja K⁺ i hiperpolarizacija udaljavaju membranski potencijal od praga. Akcijski potencijal izazvan u relativnom refrakternom razdoblju ima manju amplitudu i sporiji uspon.</p>
+  <p>Refrakternost ima dvije važne fiziološke posljedice. Prvo, ograničava <b>najveću frekvenciju</b> kojom stanica može generirati akcijske potencijale (u brzim živčanim vlaknima do nekoliko stotina impulsa u sekundi). Drugo, osigurava <b>jednosmjerno širenje</b> akcijskog potencijala duž vlakna: membrana iza vala depolarizacije je refrakterna pa se impuls ne može vratiti. U srčanom mišiću dugo refrakterno razdoblje (zbog platoa akcijskog potencijala) sprječava tetaničku kontrakciju i omogućuje ritmičko punjenje srca.</p>
+  <p>U simulaciji refrakternost ispitujete <b>metodom dvostrukog podražaja</b>: dva jednaka podražaja primjenjuju se u zadanom vremenskom razmaku. Ako drugi podražaj pada u apsolutno refrakterno razdoblje, odgovor izostaje; u relativnom refrakternom razdoblju odgovor je smanjen ili ga izaziva samo jači podražaj; nakon završetka refrakternosti drugi odgovor je jednak prvome. Na grafu možete uključiti prikaz varijabli vrata Hodgkin-Huxleyjeva modela: <b>m</b> (aktivacijska vrata Na-kanala), <b>h</b> (inaktivacijska vrata Na-kanala — niska vrijednost h znači da su kanali inaktivirani) i <b>n</b> (aktivacijska vrata K-kanala).</p>
+</template>
+
+<template id="tpl-howto">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>IZVOĐENJE VJEŽBE.</b> Simulacija neprekidno iscrtava membranski potencijal Hodgkin-Huxleyjeve membrane. U <b>Parametrima podražaja</b> postavljate napon, struju i trajanje pojedinačnog podražaja (gumb <b>⚡ Podražaj</b>). U bloku <b>Test dvostrukim podražajem</b> postavljate vremenski razmak između dva jednaka podražaja (u ms simulacijskog vremena) i pokrećete ih gumbom <b>⚡⚡ Dvostruki podražaj</b>. Iznad grafa prikazuju se trenutačni potencijal, vrijeme proteklo od zadnjeg podražaja i automatska ocjena odgovora na zadnji podražaj (AP ili bez AP, s vrškom u mV).</p>
+  <ol>
+    <li>kliknite <b>Fiziološki uvjeti</b>, zatim jednim podražajem (⚡) provjerite da zadani parametri izazivaju akcijski potencijal — to je referentni odgovor (redak 1 tablice);</li>
+    <li>u tablici odaberite redak s razmakom od 1 ms i kliknite <b>▶ Postavi</b>, zatim <b>⚡⚡ Dvostruki podražaj</b>; promatrajte odgovor na drugi podražaj;</li>
+    <li>pričekajte da program iznad grafa ispiše ocjenu odgovora, zatim gumbom <b>⤓ Očitaj</b> upišite odgovor u tablicu; ponovite za razmake 2, 3, 5, 8 i 12 ms (prije svakog pokusa pustite membranu da se vrati u mirovanje);</li>
+    <li>odredite najkraći razmak pri kojem drugi podražaj izaziva akcijski potencijal (kraj apsolutnog refrakternog razdoblja) i najkraći razmak pri kojem je drugi AP jednak prvome (kraj relativnog refrakternog razdoblja);</li>
+    <li>ponovite mjerenja s jakim podražajem (reci 8–11): u relativnom refrakternom razdoblju jaki podražaj izaziva AP tamo gdje standardni nije mogao;</li>
+    <li>uključite u legendi prikaz varijabli vrata <b>h</b> i <b>n</b> i povežite njihov tijek s izmjerenim refrakternim razdobljima.</li>
+  </ol>
+  <p>Po potrebi promijenite izvanstaničnu koncentraciju K⁺ i ispitajte kako hiperkalemija mijenja trajanje refrakternog razdoblja.</p>
+</template>
+
+<template id="tpl-results">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>TUMAČENJE REZULTATA.</b> Pri razmaku od 1–3 ms drugi podražaj pada u <b>apsolutno refrakterno razdoblje</b>: drugi podražaj stiže tijekom trajanja prvog akcijskog potencijala ili neposredno nakon njega i ne izaziva nikakav dodatni odgovor (program to označava kao „nema novog AP“), jer je varijabla <b>h</b> blizu nule — Na-kanali su inaktivirani. Pri razmacima od približno 4 do 10 ms standardni podražaj (reci 5–6) izaziva samo lokalni odgovor koji je to veći što je razmak dulji (npr. do −65 mV pri 5 ms, do −52 mV pri 8 ms) — to je <b>relativno refrakterno razdoblje</b>: h se oporavlja, ali je još manji od vrijednosti u mirovanju, dok je <b>n</b> još povišen (otvoreni K-kanali) i membrana je hiperpolarizirana. Tek pri razmaku od približno 12 ms (redak 7) standardni podražaj ponovno izaziva puni akcijski potencijal.</p>
+  <p>Jaki podražaj (reci 8–11) u relativnom refrakternom razdoblju izaziva akcijski potencijal tamo gdje standardni nije mogao — ali smanjene amplitude i sporijeg uspona (vršak ≈ +46 mV pri 6 ms, ≈ +53 mV pri 8 ms, ≈ +56 mV pri 10 ms, u usporedbi s +56 mV u mirovanju). Međutim, ni jaki podražaj ne može izazvati AP pri razmaku od 4 ms — to je izravan dokaz da je apsolutna refrakternost posljedica stanja kanala, a ne snage podražaja. Hiperkalemija (povišen [K⁺]<sub>iz</sub>) depolarizira membranu i drži veći dio Na-kanala inaktiviranim pa se refrakterna razdoblja produljuju, a pri visokim koncentracijama membrana postaje trajno nepodražljiva.</p>
+</template>
+
+<template id="tpl-questions">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <ol>
+    <li>Definirajte apsolutno i relativno refrakterno razdoblje i označite ih na krivulji akcijskog potencijala.</li>
+    <li>Zašto ni najjači podražaj ne može izazvati akcijski potencijal tijekom apsolutnog refrakternog razdoblja? Koja varijabla Hodgkin-Huxleyjeva modela to opisuje?</li>
+    <li>Objasnite zašto je akcijski potencijal izazvan u relativnom refrakternom razdoblju manje amplitude.</li>
+    <li>Kako refrakternost utječe na najveću frekvenciju impulsa u živčanom vlaknu i na smjer širenja akcijskog potencijala?</li>
+    <li>Predvidite kako bi TEA (blokator K-voltažnih kanala) promijenio trajanje relativnog refrakternog razdoblja i provjerite pretpostavku u Vježbi 3.</li>
+  </ol>
+</template>
+
+<template id="tpl-outcomes-en">
+  <span class="draft">Draft — the content of Exercise 4 did not exist in the original; prepared for the authors' review.</span>
+  <h2>After completing this exercise you will be able to:</h2>
+  <ul>
+    <li>define excitability and inexcitability (refractoriness) of the membrane</li>
+    <li>distinguish the absolute and relative refractory periods and relate them to the phases of the action potential</li>
+    <li>explain the molecular basis of refractoriness — inactivation of voltage-gated Na channels and prolonged activation of voltage-gated K channels</li>
+    <li>determine the duration of the refractory periods experimentally with the paired-pulse method</li>
+    <li>explain how refractoriness limits the maximum frequency of action potentials and ensures one-way propagation of the impulse</li>
+  </ul>
+</template>
+
+<template id="tpl-theory-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>THEORY.</b> Membrane excitability is not constant: during an action potential and for a short time afterwards the membrane cannot be re-excited at all, or only by a stronger stimulus. This period of reduced excitability is called the <b><i>refractory period</i></b>, and two parts are distinguished.</p>
+  <p>The <b>absolute refractory period</b> lasts from the moment threshold is reached until about the middle of repolarisation. During this period even the strongest stimulus cannot evoke a new action potential. The reason is the state of the voltage-gated Na channels: after activation their inactivation gates close and the channels remain inactivated until the membrane repolarises to about −50 mV. An inactivated channel cannot be reopened by depolarisation — it must first be "reset" (deactivated) by the return of the potential toward the resting value.</p>
+  <p>The <b>relative refractory period</b> follows the absolute one and lasts until the end of the hyperpolarisation. Some Na channels have already returned to the resting state, so an action potential can be evoked, but only by a <i>stronger</i> stimulus than at rest. There are two reasons: (1) not all Na channels are yet available, so the inward Na⁺ current is smaller, and (2) K channels are still open, so the increased outward K⁺ current and the hyperpolarisation keep the membrane potential further from threshold. An action potential evoked during the relative refractory period has a smaller amplitude and a slower upstroke.</p>
+  <p>Refractoriness has two important physiological consequences. First, it limits the <b>maximum frequency</b> at which a cell can generate action potentials (up to several hundred impulses per second in fast nerve fibres). Second, it ensures <b>one-way propagation</b> of the action potential along a fibre: the membrane behind the wave of depolarisation is refractory, so the impulse cannot turn back. In cardiac muscle the long refractory period (due to the plateau of the action potential) prevents tetanic contraction and allows rhythmic filling of the heart.</p>
+  <p>In the simulation you test refractoriness with the <b>paired-pulse method</b>: two identical stimuli are applied at a chosen interval. If the second stimulus falls into the absolute refractory period there is no response; in the relative refractory period the response is reduced or is evoked only by a stronger stimulus; after refractoriness has ended the second response equals the first. On the graph you can switch on the gate variables of the Hodgkin-Huxley model: <b>m</b> (Na-channel activation gate), <b>h</b> (Na-channel inactivation gate — a low h means the channels are inactivated) and <b>n</b> (K-channel activation gate).</p>
+</template>
+
+<template id="tpl-howto-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>PERFORMING THE EXERCISE.</b> The simulation continuously plots the membrane potential of a Hodgkin-Huxley membrane. Under <b>Stimulus parameters</b> you set the voltage, current and duration of a single stimulus (<b>⚡ Stimulus</b> button). Under <b>Paired-pulse test</b> you set the interval between two identical stimuli (in ms of simulated time) and fire them with <b>⚡⚡ Paired stimuli</b>. Above the graph the current potential, the time since the last stimulus and an automatic verdict on the response to the last stimulus (AP or no AP, with the peak in mV) are displayed.</p>
+  <ol>
+    <li>click <b>Physiological conditions</b>, then check with a single stimulus (⚡) that the default parameters evoke an action potential — this is the reference response (worksheet row 1);</li>
+    <li>in the worksheet select the row with a 1 ms interval and click <b>▶ Apply</b>, then <b>⚡⚡ Paired stimuli</b>; observe the response to the second stimulus;</li>
+    <li>wait for the verdict above the graph, then use <b>⤓ Read</b> to enter the response into the worksheet; repeat for intervals of 2, 3, 5, 8 and 12 ms (let the membrane return to rest before each trial);</li>
+    <li>determine the shortest interval at which the second stimulus evokes an action potential (end of the absolute refractory period) and the shortest interval at which the second AP equals the first (end of the relative refractory period);</li>
+    <li>repeat the measurements with a strong stimulus (rows 8–11): in the relative refractory period a strong stimulus evokes an AP where the standard one could not;</li>
+    <li>switch on the gate variables <b>h</b> and <b>n</b> in the legend and relate their time course to the measured refractory periods.</li>
+  </ol>
+  <p>If desired, change the extracellular K⁺ concentration and examine how hyperkalaemia alters the duration of the refractory period.</p>
+</template>
+
+<template id="tpl-results-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>INTERPRETING RESULTS.</b> At intervals of 1–3 ms the second stimulus falls into the <b>absolute refractory period</b>: it arrives during or immediately after the first action potential and evokes no additional response (the program reports "no new AP"), because the variable <b>h</b> is close to zero — the Na channels are inactivated. At intervals of about 4 to 10 ms the standard stimulus (rows 5–6) evokes only a local response that grows with the interval (e.g. up to −65 mV at 5 ms, up to −52 mV at 8 ms) — this is the <b>relative refractory period</b>: h is recovering but is still below its resting value, while <b>n</b> is still elevated (K channels open) and the membrane is hyperpolarised. Only at an interval of about 12 ms (row 7) does the standard stimulus again evoke a full action potential.</p>
+  <p>A strong stimulus (rows 8–11) in the relative refractory period evokes an action potential where the standard one could not — but of reduced amplitude and slower upstroke (peak ≈ +46 mV at 6 ms, ≈ +53 mV at 8 ms, ≈ +56 mV at 10 ms, compared with +56 mV at rest). Even the strong stimulus, however, cannot evoke an AP at a 4 ms interval — direct evidence that absolute refractoriness is a consequence of channel state, not of stimulus strength. Hyperkalaemia (raised [K⁺]<sub>o</sub>) depolarises the membrane and keeps a larger fraction of Na channels inactivated, so the refractory periods lengthen, and at high concentrations the membrane becomes permanently inexcitable.</p>
+</template>
+
+<template id="tpl-questions-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <ol>
+    <li>Define the absolute and relative refractory periods and mark them on the action-potential curve.</li>
+    <li>Why can even the strongest stimulus not evoke an action potential during the absolute refractory period? Which variable of the Hodgkin-Huxley model describes this?</li>
+    <li>Explain why an action potential evoked in the relative refractory period has a smaller amplitude.</li>
+    <li>How does refractoriness affect the maximum impulse frequency in a nerve fibre and the direction of propagation of the action potential?</li>
+    <li>Predict how TEA (a voltage-gated K-channel blocker) would change the duration of the relative refractory period and test your assumption in Exercise 3.</li>
+  </ol>
+</template>
+
+<script type="module" src="js/v4.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%230b6bcb' stroke-width='5'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%230b6bcb'/%3E%3C/svg%3E">
+<title>PROSIG — simulacijski program za učenje potencijala membrane</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main class="page">
+  <div class="hero">
+    <h1>PROSIG</h1>
+    <p data-i18n="app.subtitle"></p>
+  </div>
+
+  <div class="cards">
+    <a class="card" href="v1.html">
+      <div class="num"><span data-i18n="nav.ex"></span> 1</div>
+      <h3 data-i18n="ex1"></h3>
+      <p data-i18n="d1"></p>
+    </a>
+    <a class="card" href="v2.html">
+      <div class="num"><span data-i18n="nav.ex"></span> 2</div>
+      <h3 data-i18n="ex2"></h3>
+      <p data-i18n="d2"></p>
+    </a>
+    <a class="card" href="v3.html">
+      <div class="num"><span data-i18n="nav.ex"></span> 3</div>
+      <h3 data-i18n="ex3"></h3>
+      <p data-i18n="d3"></p>
+    </a>
+    <a class="card" href="v4.html">
+      <div class="num"><span data-i18n="nav.ex"></span> 4</div>
+      <h3 data-i18n="ex4"></h3>
+      <p data-i18n="d4"></p>
+    </a>
+    <a class="card extra" href="v5.html">
+      <div class="num"><span data-i18n="nav.ex"></span> 5</div>
+      <h3 data-i18n="ex5"></h3>
+      <p data-i18n="d5"></p>
+    </a>
+    <a class="card" href="v8.html">
+      <div class="num"><span data-i18n="nav.ex"></span> 8</div>
+      <h3 data-i18n="ex8"></h3>
+      <p data-i18n="d8"></p>
+    </a>
+    <a class="card" href="v9.html">
+      <div class="num"><span data-i18n="nav.ex"></span> 9</div>
+      <h3 data-i18n="ex9"></h3>
+      <p data-i18n="d9"></p>
+    </a>
+    <a class="card" href="v10.html">
+      <div class="num"><span data-i18n="nav.ex"></span> 10</div>
+      <h3 data-i18n="ex10"></h3>
+      <p data-i18n="d10"></p>
+    </a>
+    <a class="card" href="v11.html">
+      <div class="num"><span data-i18n="nav.ex"></span> 11</div>
+      <h3 data-i18n="ex11"></h3>
+      <p data-i18n="d11"></p>
+    </a>
+    <a class="card" href="v12.html">
+      <div class="num"><span data-i18n="nav.ex"></span> 12</div>
+      <h3 data-i18n="ex12"></h3>
+      <p data-i18n="d12"></p>
+    </a>
+  </div>
+
+  <p class="index-note" data-i18n="idx.note"></p>
+</main>
+<script type="module">
+  import { mountHeader, mountFooter, applyI18n, lang } from './js/ui.js';
+  const extra = {
+    d1: ['Nernstova i Goldmanova jednadžba na polupropusnoj membrani s dva odjeljka.', 'Nernst and Goldman equations on a semi-permeable two-compartment membrane.'],
+    d2: ['Kako koncentracije i vodljivosti za Na⁺, K⁺ i Cl⁻ određuju potencijal mirovanja.', 'How Na⁺, K⁺ and Cl⁻ concentrations and conductances set the resting potential.'],
+    d3: ['Hodgkin-Huxleyjev model: prag, faze akcijskog potencijala, TTX i TEA.', 'Hodgkin–Huxley model: threshold, action-potential phases, TTX and TEA.'],
+    d4: ['Apsolutna i relativna refrakternost — podražaji u različitim fazama AP.', 'Absolute and relative refractoriness — stimuli in different AP phases.'],
+    d5: ['Dodatni modul: ionske struje i vrata kanala pri zadanom podražaju.', 'Extra module: ionic currents and channel gates for a given stimulus.'],
+    d8: ['Animacija od aksona do Ca²⁺ iz SR, EPP, trzaj–sumacija–tetanus, duljina–sila, sila–brzina; miastenija, botulizam, kurare.', 'Animation from axon to SR Ca²⁺, EPP, twitch–summation–tetanus, length–tension, force–velocity; myasthenia, botulism, curare.'],
+    d9: ['Na⁺-kanal s dvoja vrata (3 stanja) i K⁺-kanal s jednim vratima (2 stanja) animirani uz akcijski potencijal; Na⁺/K⁺-crpka, ouabain i volumen stanice.', 'The Na⁺ channel with two gates (3 states) and the K⁺ channel with one gate (2 states) animated along an action potential; the Na⁺/K⁺ pump, ouabain and cell volume.'],
+    d10: ['Animacija ciklusa poprečnih mostova s ATP, Ca²⁺ i troponinom; rigor mortis, cijanid/ishemija, maligna hipertermija i dantrolen.', 'Cross-bridge cycle animation with ATP, Ca²⁺ and troponin; rigor mortis, cyanide/ischaemia, malignant hyperthermia and dantrolene.'],
+    d11: ['EKG na standardnom papiru sa šestarom: frekvencija, ritam, AV blokovi, fibrilacija, blok grane, STEMI; animirani vodič i zadatak za konstrukciju električne osi srca; 3D animacija depolarizacije i repolarizacije srca uz EKG.', 'ECG on standard paper with calipers: rate, rhythm, AV blocks, fibrillation, bundle-branch block, STEMI; an animated guide and a task for constructing the cardiac electrical axis; a 3D animation of cardiac depolarisation and repolarisation alongside the ECG.'],
+    d12: ['Poiseuilleov zakon i otpor žile (R ∝ 1/r⁴), predviđanje protoka, vazokonstrikcija, anemija, policitemija i stenoza; MAP = CO × TPR, CO = HR × SV, krvarenje, napor i vazodilatacija.', 'Poiseuille\u2019s law and vascular resistance (R ∝ 1/r⁴), predicting flow, vasoconstriction, anaemia, polycythaemia and stenosis; MAP = CO × TPR, CO = HR × SV, haemorrhage, exercise and vasodilation.'],
+    'idx.note': ['Obnovljena verzija programa PROSIG (2026.) — ista fizika, novo sučelje. Unosi u tablicama spremaju se u vašem pregledniku.', 'Refreshed PROSIG (2026) — same physics, new interface. Worksheet entries are saved in your browser.'],
+  };
+  mountHeader(0); applyI18n(); mountFooter();
+  document.querySelectorAll('[data-i18n]').forEach(el => { const e = extra[el.dataset.i18n]; if (e) el.textContent = e[lang === 'en' ? 1 : 0]; });
+</script>
+</body>
+</html>

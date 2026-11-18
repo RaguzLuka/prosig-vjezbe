@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%230b6bcb' stroke-width='5'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%230b6bcb'/%3E%3C/svg%3E">
+<title>PROSIG — Vježba 11: Elektrokardiogram i električna os srca</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main class="page">
+  <div class="page-head">
+    <div class="kicker"><span data-i18n="nav.ex"></span> 11</div>
+    <h1 data-i18n="ex11"></h1>
+  </div>
+  <div class="purpose" data-lang="hr"><b>SVRHA VJEŽBE</b> je naučiti sustavno očitati EKG — (1) frekvenciju iz razmaka R–R, (2) predvodnika, pravilnost ritma i provođenje kroz AV-čvor i komore, (3) ST-spojnicu — te (4) iz odvoda I i III <b>konstruirati srednji vektor QRS-a (električnu os srca)</b> i procijeniti je li normalna ili devijirana ulijevo/udesno.</div>
+  <div class="purpose" data-lang="en"><b>PURPOSE OF THE EXERCISE:</b> to learn to read an ECG systematically — (1) rate from the R–R interval, (2) pacemaker, regularity and conduction through the AV node and ventricles, (3) the ST segment — and (4) to <b>construct the mean QRS vector (the electrical axis of the heart)</b> from leads I and III and judge whether it is normal or deviated to the left/right.</div>
+  <div id="intro"></div>
+  <div id="modes"></div>
+  <div id="sim" class="sim"></div>
+  <div class="materials-title" data-i18n="materials"></div>
+  <div id="sections"></div>
+</main>
+
+<template id="tpl-key">
+  <ul>
+    <li><b>Četiri koraka očitavanja:</b> frekvencija = 60 / R–R (300-150-100-75-60-50 po velikim kvadratima) → predvodnik i pravilnost (P pred svakim QRS-om? PR 0,12–0,20 s? QRS &lt; 0,12 s?) → ST-spojnica → srednji vektor QRS-a.</li>
+    <li><b>Odvod „vidi“ projekciju:</b> val depolarizacije prema + elektrodi daje pozitivan otklon; odvod I gleda pod 0°, II pod +60°, III pod +120°, aVF pod +90°, aVL pod −30°, aVR pod −150°. Einthoven: I + III = II.</li>
+    <li><b>Os = srednji vektor QRS-a:</b> neto otklon (R − S) u dva odvoda nanese se na njihove osi, okomice se sijeku u vrhu vektora. Normalno −30° do +110°; lijeva devijacija &lt; −30° (npr. hipertrofija lijeve klijetke), desna &gt; +110° (npr. hipertrofija desne klijetke).</li>
+  </ul>
+</template>
+<template id="tpl-key-en">
+  <ul>
+    <li><b>Four steps of reading:</b> rate = 60 / R–R (300-150-100-75-60-50 by large squares) → pacemaker and regularity (P before every QRS? PR 0.12–0.20 s? QRS &lt; 0.12 s?) → ST segment → mean QRS vector.</li>
+    <li><b>A lead "sees" a projection:</b> a depolarisation wave travelling toward the + electrode gives a positive deflection; lead I looks at 0°, II at +60°, III at +120°, aVF at +90°, aVL at −30°, aVR at −150°. Einthoven: I + III = II.</li>
+    <li><b>Axis = mean QRS vector:</b> the net deflection (R − S) in two leads is plotted on their axes; the perpendiculars cross at the tip of the vector. Normal −30° to +110°; left axis deviation &lt; −30° (e.g. left-ventricular hypertrophy), right &gt; +110° (e.g. right-ventricular hypertrophy).</li>
+  </ul>
+</template>
+
+<template id="tpl-outcomes">
+  <span class="draft">Nacrt — nova vježba (2026.) prema praktikumu „ECG“; pripremljeno za pregled autora.</span>
+  <h2>Nakon obrade ove vježbe moći ćete:</h2>
+  <ul>
+    <li>opisati provodni sustav srca (SA-čvor, internodalni putovi, AV-čvor, Hisov snop, grane, Purkinjeova vlakna) s brzinama provođenja i vlastitim frekvencijama te učinak simpatikusa i vagusa</li>
+    <li>imenovati valove, segmente i intervale EKG-a (P, PR, QRS, ST, T, QT) i navesti njihove normalne vrijednosti</li>
+    <li>objasniti standardne (I, II, III), unipolarne (aVR, aVL, aVF) i prekordijalne (V1–V6) odvode, Einthovenov trokut i zakon te heksaksijalni sustav</li>
+    <li>izmjeriti frekvenciju iz razmaka R–R, prepoznati sinusni ritam, bradikardiju, tahikardiju, fibrilaciju atrija, AV blokove I.–III. stupnja, blok grane i elevaciju ST-spojnice</li>
+    <li><b>konstruirati srednji vektor QRS-a (električnu os srca) iz odvoda I i III (ili I i aVF)</b>, očitati kut i procijeniti devijaciju</li>
+  </ul>
+</template>
+
+<template id="tpl-theory">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>NASTANAK I PROVOĐENJE IMPULSA.</b> Impuls nastaje u <b>sinoatrijskom (SA) čvoru</b> (≈ 70/min), širi se atrijima internodalnim putovima (≈ 1 m/s) do <b>atrioventrikularnog (AV) čvora</b>, u kojem se provođenje uspori na ≈ 0,05 m/s (odgoda ≈ 0,1 s koja omogućuje da se atriji isprazne prije kontrakcije komora; vlastita frekvencija AV-čvora 40–60/min), zatim kroz <b>Hisov snop</b>, lijevu i desnu <b>granu</b> i <b>Purkinjeova vlakna</b> (1,5–4 m/s) brzo zahvati obje komore. Akcijski potencijal radnog miokarda ima plato (ulazak Ca²⁺) pa traje 200–300 ms; kontrakcija (trzaj) traje još dulje i nema tetanusa. <b>Simpatikus</b> povećava frekvenciju, kontraktilnost, brzinu provođenja i podražljivost; <b>parasimpatikus</b> (n. vagus) smanjuje frekvenciju i, blago, kontraktilnost.</p>
+  <p><b>VALOVI I INTERVALI.</b> <b>P val</b> (0,06–0,11 s) — depolarizacija atrija; <b>PR (PQ) interval</b> (0,12–0,20 s) — od početka P do početka QRS, uključuje odgodu u AV-čvoru; <b>QRS</b> (&lt; 0,12 s) — depolarizacija komora (repolarizacija atrija skrivena je u njemu); <b>ST-spojnica</b> (≈ 0,12 s) — plato, komore su cijele depolarizirane, normalno u izoelektričnoj liniji; <b>T val</b> (≈ 0,16 s) — repolarizacija komora; <b>QT interval</b> (0,36–0,44 s) — električna sistola. Papir teče 25 mm/s: mali kvadrat = 0,04 s, veliki = 0,2 s; umjerenje 10 mm = 1 mV.</p>
+  <p><b>ODVODI.</b> <b>Standardni bipolarni</b> odvodi mjere razliku potencijala između udova: I (desna ruka − → lijeva ruka +), II (desna ruka − → lijeva noga +), III (lijeva ruka − → lijeva noga +). Tvore <b>Einthovenov trokut</b>; po <b>Einthovenovu zakonu</b> u svakom trenutku vrijedi I + III = II. <b>Pojačani unipolarni</b> odvodi aVR, aVL, aVF gledaju s desnog ramena (−150°), lijevog ramena (−30°) i nogu (+90°). Zajedno s I (0°), II (+60°) i III (+120°) čine <b>heksaksijalni sustav</b> u frontalnoj ravnini — šest osi razmaknutih po 30°, kutovi se broje od odvoda I u smjeru kazaljke na satu. <b>Prekordijalni</b> odvodi V1–V6 gledaju srce u vodoravnoj ravnini (V1–V2 desna klijetka i septum, V5–V6 lijeva klijetka). Temeljno pravilo: <b>val depolarizacije koji putuje prema pozitivnoj elektrodi daje pozitivan otklon</b>; odvod „vidi“ projekciju srčanog vektora na svoju os, a okomit vektor daje izoelektričan (bifazičan) QRS.</p>
+  <p><b>SREDNJI VEKTOR QRS-a — ELEKTRIČNA OS.</b> Tijekom depolarizacije komora trenutačni vektor mijenja smjer (septum → vršak i slobodne stijenke → baza); njihov prosjek, vagnut voltažom, je <b>srednji vektor QRS-a</b>. Njegov smjer u frontalnoj ravnini je <b>električna os srca</b>, normalno <b>−30° do +110°</b> (najčešće oko +60°, jer lijeva klijetka ima najviše mase). <b>Konstrukcija:</b> u dva odvoda izmjeri se neto otklon QRS-a (R − S, u mV); vrijednosti se nanesu na osi tih odvoda od zajedničkog središta (pozitivno prema + polu); iz točaka se povuku okomice na osi; spojnica središta i presjecišta je srednji vektor, a kut se očita na heksaksijalnoj ljestvici. Brza procjena: os leži blizu odvoda s najvećim pozitivnim QRS-om i okomito na odvod u kojem je QRS izoelektričan; pozitivan I i pozitivan aVF → normalna os. <b>Devijacije:</b> <i>lijeva</i> (&lt; −30°) pri hipertrofiji lijeve klijetke, lijevom prednjem hemibloku, inferiornom infarktu; <i>desna</i> (&gt; +110°) pri hipertrofiji desne klijetke (plućne bolesti, plućna embolija), u male djece normalno. Pri <b>bloku grane</b> QRS je širok (≥ 0,12 s) i os se pomiče prema blokiranoj strani jer se ta klijetka depolarizira zadnja, sporo, kroz radni miokard.</p>
+  <h2>POREMEĆAJI RITMA I PROVOĐENJA</h2>
+  <p><b>Sinusna bradikardija</b> (&lt; 60/min, sportaši, vagus, hipotireoza) i <b>sinusna tahikardija</b> (&gt; 100/min, napor, vrućica, hipovolemija) zadržavaju P pred svakim QRS-om. <b>Fibrilacija atrija:</b> nema P valova (valovita izoelektrična linija), R–R posve nepravilan, QRS uzak. <b>Fibrilacija komora:</b> kaotični valovi bez prepoznatljivih QRS-ova — srčani zastoj. <b>AV blok I. stupnja:</b> PR &gt; 0,20 s, svaki P proveden. <b>AV blok II. stupnja:</b> neki P valovi nisu provedeni — Mobitz I (Wenckebach: PR se produljuje do ispadanja) ili Mobitz II (PR stalan, iznenadno ispadanje QRS-a). <b>AV blok III. stupnja:</b> potpuna disocijacija P valova i QRS-ova; komore pokreće spori zamjenski ritam (30–40/min), QRS često širok. <b>Elevacija ST-spojnice</b> u odvodima koji gledaju ozlijeđenu stijenku (II, III, aVF — inferiorna; V1–V4 — prednja) znak je akutnog infarkta; depresija ST upućuje na ishemiju.</p>
+</template>
+
+<template id="tpl-howto">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p>Vježba ima tri kartice. <b>EKG zapis i analiza:</b> šest odvoda udova (I, II, III / aVR, aVL, aVF, po 5 s) i ritamska traka odvoda II (10 s) na standardnom papiru; odaberite scenarij (sinusni ritam, bradikardija, tahikardija, AV blokovi, fibrilacija atrija, blok grane, STEMI, devijacije osi) ili mijenjajte frekvenciju, PR, QRS i os klizačima. <b>Šestar:</b> povucite mišem po zapisu od jednog R-zupca do sljedećega — program upiše razmak i frekvenciju. <b>Kako se konstruira os — vodič:</b> animacija u osam koraka (mjerenje R i S u odvodu I i III, crtanje osi, nanošenje vrijednosti, okomice, vektor, kut) s objašnjenjem svakog koraka; os primjera i metodu (I + III ili I + aVF) možete mijenjati. <b>Konstrukcija osi — zadatak:</b> novi „bolesnik“ sa šest odvoda u povećanom prikazu (8 px/mm): izmjerite R − S u I i III (prijeđite mišem preko zapisa za očitanje napona), upišite vrijednosti, kliknite presjecište okomica na dijagramu i procijenite os — program provjeri svaki korak.</p>
+  <ol>
+    <li>na kartici zapisa prođite scenarije i za svaki odredite frekvenciju (šestar), predvodnik, pravilnost, PR, QRS i ST;</li>
+    <li>pogledajte vodič za konstrukciju osi u cijelosti (gumb „Pokreni vodič“), zatim ga ponovite s drugom osi;</li>
+    <li>na kartici zadatka riješite barem tri slučaja (normalna, lijeva i desna os);</li>
+    <li>riješite vođene zadatke (15) — posljednji je konstrukcija osi i upis kuta.</li>
+  </ol>
+</template>
+
+<template id="tpl-results">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>Sinusni ritam 75/min:</b> R–R = 0,80 s (4 velika kvadrata), P pred svakim QRS-om, PR 0,16 s, QRS 0,09 s, ST u izoelektričnoj liniji; QRS pozitivan u I, II, III i aVF, negativan u aVR, gotovo izoelektričan u aVL → os ≈ +65°. <b>Bradikardija 45/min:</b> R–R 1,33 s. <b>Tahikardija 130/min:</b> R–R 0,46 s. <b>AV blok I.:</b> PR 0,28 s. <b>Mobitz II:</b> svaki treći P bez QRS-a, komorska frekvencija ≈ 50/min. <b>AV blok III.:</b> P 75/min, široki QRS ≈ 38/min, bez odnosa. <b>Fibrilacija atrija:</b> R–R 0,45–1,0 s, nema P. <b>Blok grane:</b> QRS 0,16 s. <b>Inferiorni STEMI:</b> ST podignut ≈ 0,3 mV u II, III, aVF. <b>Lijeva devijacija:</b> I pozitivan, II i aVF negativni, os ≈ −45°. <b>Desna devijacija:</b> I negativan, III i aVF pozitivni, os ≈ +135°.</p>
+  <p><b>Konstrukcija osi (primjer iz vodiča, os ≈ +65°):</b> odvod I: R 0,69 − S 0,24 = 0,45 mV; odvod III: R 0,70 − S 0,03 = 0,67 mV; točke na osima 0° i 120°, okomice se sijeku u (0,45; 1,04) mV → vektor 1,13 mV pod +66° — normalna os. Ista konstrukcija s I i aVF (aVF = 1,04 mV) daje isti kut: tg os = 1,04 / 0,45.</p>
+</template>
+
+<template id="tpl-questions">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <ol>
+    <li>Nacrtajte provodni sustav srca i uz svaki dio napišite brzinu provođenja i vlastitu frekvenciju. Zašto je odgoda u AV-čvoru korisna?</li>
+    <li>Na zapisu s R–R razmakom od 3 velika kvadrata odredite frekvenciju. Koji je razmak R–R pri 60/min u sekundama i u malim kvadratima?</li>
+    <li>Kako razlikujete AV blok I., II. i III. stupnja? Koji od njih ugrožava bolesnika i zašto?</li>
+    <li>Objasnite pravilo „val depolarizacije prema + elektrodi daje pozitivan otklon“ i po njemu predvidite polaritet QRS-a u aVR kod normalne osi.</li>
+    <li>Na EKG-u je neto QRS u odvodu I −0,8 mV, a u odvodu III +1,1 mV. Konstruirajte os, očitajte kut i procijenite je li riječ o devijaciji. Koja stanja daju takav nalaz?</li>
+    <li>Zašto hipertrofija lijeve klijetke pomiče os ulijevo, a blok desne grane udesno?</li>
+  </ol>
+</template>
+
+<template id="tpl-outcomes-en">
+  <span class="draft">Draft — new exercise (2026) based on the "ECG" practicum; prepared for the authors' review.</span>
+  <h2>After completing this exercise you will be able to:</h2>
+  <ul>
+    <li>describe the conduction system of the heart (SA node, internodal pathways, AV node, bundle of His, bundle branches, Purkinje fibres) with conduction velocities and intrinsic rates, and the effects of sympathetic and vagal stimulation</li>
+    <li>name the waves, segments and intervals of the ECG (P, PR, QRS, ST, T, QT) and state their normal values</li>
+    <li>explain the standard (I, II, III), unipolar (aVR, aVL, aVF) and precordial (V1–V6) leads, Einthoven's triangle and law, and the hexaxial system</li>
+    <li>measure the rate from the R–R interval and recognise sinus rhythm, bradycardia, tachycardia, atrial fibrillation, 1st–3rd-degree AV block, bundle-branch block and ST elevation</li>
+    <li><b>construct the mean QRS vector (electrical axis) from leads I and III (or I and aVF)</b>, read the angle and classify any deviation</li>
+  </ul>
+</template>
+
+<template id="tpl-theory-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>IMPULSE GENERATION AND CONDUCTION.</b> The impulse arises in the <b>sinoatrial (SA) node</b> (≈ 70/min), spreads through the atria along internodal pathways (≈ 1 m/s) to the <b>atrioventricular (AV) node</b>, where conduction slows to ≈ 0.05 m/s (a delay of ≈ 0.1 s that lets the atria empty before the ventricles contract; intrinsic AV-nodal rate 40–60/min), then rapidly engages both ventricles via the <b>bundle of His</b>, the left and right <b>bundle branches</b> and the <b>Purkinje fibres</b> (1.5–4 m/s). The working-myocardium action potential has a plateau (Ca²⁺ entry) and lasts 200–300 ms; the twitch lasts even longer and cannot tetanise. <b>Sympathetic</b> stimulation increases rate, contractility, conduction velocity and excitability; <b>parasympathetic</b> (vagal) stimulation decreases rate and, slightly, contractility.</p>
+  <p><b>WAVES AND INTERVALS.</b> <b>P wave</b> (0.06–0.11 s) — atrial depolarisation; <b>PR (PQ) interval</b> (0.12–0.20 s) — from the start of P to the start of QRS, includes the AV delay; <b>QRS</b> (&lt; 0.12 s) — ventricular depolarisation (atrial repolarisation is hidden within it); <b>ST segment</b> (≈ 0.12 s) — plateau, the ventricles are fully depolarised, normally on the baseline; <b>T wave</b> (≈ 0.16 s) — ventricular repolarisation; <b>QT interval</b> (0.36–0.44 s) — electrical systole. Paper runs at 25 mm/s: small square = 0.04 s, large = 0.2 s; calibration 10 mm = 1 mV.</p>
+  <p><b>LEADS.</b> The <b>standard bipolar</b> leads measure the potential difference between limbs: I (right arm − → left arm +), II (right arm − → left leg +), III (left arm − → left leg +). They form <b>Einthoven's triangle</b>; by <b>Einthoven's law</b> I + III = II at every instant. The <b>augmented unipolar</b> leads aVR, aVL, aVF look from the right shoulder (−150°), the left shoulder (−30°) and the feet (+90°). Together with I (0°), II (+60°) and III (+120°) they form the <b>hexaxial system</b> in the frontal plane — six axes 30° apart, angles counted clockwise from lead I. The <b>precordial</b> leads V1–V6 view the heart in the horizontal plane (V1–V2 right ventricle and septum, V5–V6 left ventricle). The basic rule: <b>a depolarisation wave travelling toward the positive electrode gives a positive deflection</b>; a lead "sees" the projection of the cardiac vector onto its axis, and a perpendicular vector gives an isoelectric (biphasic) QRS.</p>
+  <p><b>THE MEAN QRS VECTOR — THE ELECTRICAL AXIS.</b> During ventricular depolarisation the instantaneous vector changes direction (septum → apex and free walls → base); their voltage-weighted average is the <b>mean QRS vector</b>. Its direction in the frontal plane is the <b>electrical axis</b>, normally <b>−30° to +110°</b> (most often about +60°, since the left ventricle has the most mass). <b>Construction:</b> the net QRS deflection (R − S, in mV) is measured in two leads; the values are plotted on those leads' axes from the common centre (positive toward the + pole); perpendiculars are drawn from the points; the line from the centre to their intersection is the mean vector and its angle is read on the hexaxial scale. Quick estimate: the axis lies close to the lead with the largest positive QRS and perpendicular to the lead with an isoelectric QRS; positive I and positive aVF → normal axis. <b>Deviations:</b> <i>left</i> (&lt; −30°) in left-ventricular hypertrophy, left anterior hemiblock, inferior infarction; <i>right</i> (&gt; +110°) in right-ventricular hypertrophy (lung disease, pulmonary embolism), normal in small children. In <b>bundle-branch block</b> the QRS is wide (≥ 0.12 s) and the axis shifts toward the blocked side because that ventricle depolarises last, slowly, through working myocardium.</p>
+  <h2>DISORDERS OF RHYTHM AND CONDUCTION</h2>
+  <p><b>Sinus bradycardia</b> (&lt; 60/min; athletes, vagal tone, hypothyroidism) and <b>sinus tachycardia</b> (&gt; 100/min; exercise, fever, hypovolaemia) keep a P before every QRS. <b>Atrial fibrillation:</b> no P waves (undulating baseline), completely irregular R–R, narrow QRS. <b>Ventricular fibrillation:</b> chaotic waves without recognisable QRS — cardiac arrest. <b>1st-degree AV block:</b> PR &gt; 0.20 s, every P conducted. <b>2nd-degree AV block:</b> some P waves are not conducted — Mobitz I (Wenckebach: PR lengthens until a beat drops) or Mobitz II (constant PR, sudden dropped QRS). <b>3rd-degree AV block:</b> complete dissociation of P waves and QRS complexes; the ventricles are driven by a slow escape rhythm (30–40/min), QRS often wide. <b>ST elevation</b> in the leads facing the injured wall (II, III, aVF — inferior; V1–V4 — anterior) signals acute infarction; ST depression suggests ischaemia.</p>
+</template>
+
+<template id="tpl-howto-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p>The exercise has three panels. <b>ECG record and analysis:</b> six limb leads (I, II, III / aVR, aVL, aVF, 5 s each) and a lead II rhythm strip (10 s) on standard paper; choose a scenario (sinus rhythm, bradycardia, tachycardia, AV blocks, atrial fibrillation, bundle-branch block, STEMI, axis deviations) or change rate, PR, QRS and axis with the sliders. <b>Calipers:</b> drag across the record from one R wave to the next — the program writes the interval and the rate. <b>How to construct the axis — guide:</b> an eight-step animation (measuring R and S in leads I and III, drawing the axes, plotting the values, perpendiculars, vector, angle) with an explanation of each step; the example axis and the method (I + III or I + aVF) can be changed. <b>Axis construction — task:</b> a new "patient" with six leads in magnified view (8 px/mm): measure R − S in I and III (move the mouse over the record to read the voltage), enter the values, click the intersection of the perpendiculars on the diagram and classify the axis — the program checks each step.</p>
+  <ol>
+    <li>on the record panel go through the scenarios and for each determine the rate (calipers), pacemaker, regularity, PR, QRS and ST;</li>
+    <li>watch the axis-construction guide in full ("Play the guide"), then replay it with a different axis;</li>
+    <li>on the task panel solve at least three cases (normal, left and right axis);</li>
+    <li>work through the guided tasks (15) — the last one is the axis construction with entry of the angle.</li>
+  </ol>
+</template>
+
+<template id="tpl-results-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>Sinus rhythm 75/min:</b> R–R = 0.80 s (4 large squares), P before every QRS, PR 0.16 s, QRS 0.09 s, ST on the baseline; QRS positive in I, II, III and aVF, negative in aVR, nearly isoelectric in aVL → axis ≈ +65°. <b>Bradycardia 45/min:</b> R–R 1.33 s. <b>Tachycardia 130/min:</b> R–R 0.46 s. <b>1st-degree AV block:</b> PR 0.28 s. <b>Mobitz II:</b> every third P without a QRS, ventricular rate ≈ 50/min. <b>3rd-degree AV block:</b> P 75/min, wide QRS ≈ 38/min, no relation. <b>Atrial fibrillation:</b> R–R 0.45–1.0 s, no P. <b>Bundle-branch block:</b> QRS 0.16 s. <b>Inferior STEMI:</b> ST elevated ≈ 0.3 mV in II, III, aVF. <b>Left axis deviation:</b> I positive, II and aVF negative, axis ≈ −45°. <b>Right axis deviation:</b> I negative, III and aVF positive, axis ≈ +135°.</p>
+  <p><b>Axis construction (guide example, axis ≈ +65°):</b> lead I: R 0.69 − S 0.24 = 0.45 mV; lead III: R 0.70 − S 0.03 = 0.67 mV; points on the 0° and 120° axes, the perpendiculars cross at (0.45; 1.04) mV → a 1.13 mV vector at +66° — normal axis. The same construction with I and aVF (aVF = 1.04 mV) gives the same angle: tan axis = 1.04 / 0.45.</p>
+</template>
+
+<template id="tpl-questions-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <ol>
+    <li>Draw the conduction system of the heart and write the conduction velocity and intrinsic rate next to each part. Why is the AV-nodal delay useful?</li>
+    <li>On a record with an R–R interval of 3 large squares determine the rate. What is the R–R interval at 60/min in seconds and in small squares?</li>
+    <li>How do you distinguish 1st-, 2nd- and 3rd-degree AV block? Which of them endangers the patient and why?</li>
+    <li>Explain the rule "a depolarisation wave toward the + electrode gives a positive deflection" and use it to predict the QRS polarity in aVR with a normal axis.</li>
+    <li>On an ECG the net QRS in lead I is −0.8 mV and in lead III +1.1 mV. Construct the axis, read the angle and decide whether it is deviated. Which conditions give such a finding?</li>
+    <li>Why does left-ventricular hypertrophy shift the axis to the left, and right bundle-branch block to the right?</li>
+  </ol>
+</template>
+
+<script type="module" src="js/v11.js"></script>
+</body>
+</html>

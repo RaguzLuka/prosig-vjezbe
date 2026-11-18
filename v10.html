@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%230b6bcb' stroke-width='5'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%230b6bcb'/%3E%3C/svg%3E">
+<title>PROSIG — Vježba 10: Ciklus poprečnih mostova</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main class="page">
+  <div class="page-head">
+    <div class="kicker"><span data-i18n="nav.ex"></span> 10</div>
+    <h1 data-i18n="ex10"></h1>
+  </div>
+  <div class="purpose" data-lang="hr"><b>SVRHA VJEŽBE</b> je pratiti jednu miozinsku glavu kroz ciklus poprečnog mosta (vezanje ATP → odvajanje → hidroliza i napinjanje → vezanje na aktin → zaveslaj → rigor) i shvatiti ulogu Ca²⁺, troponina, tropomiozina i ATP-a — te što se događa kad ATP-a nema (rigor mortis, ishemija) ili kad Ca²⁺ curi bez prestanka (maligna hipertermija, dantrolen).</div>
+  <div class="purpose" data-lang="en"><b>PURPOSE OF THE EXERCISE:</b> to follow one myosin head through the cross-bridge cycle (ATP binding → detachment → hydrolysis and cocking → attachment to actin → power stroke → rigor) and to grasp the roles of Ca²⁺, troponin, tropomyosin and ATP — and what happens when ATP is missing (rigor mortis, ischaemia) or Ca²⁺ leaks without end (malignant hyperthermia, dantrolene).</div>
+  <div id="intro"></div>
+  <div id="modes"></div>
+  <div id="sim" class="sim"></div>
+  <div class="materials-title" data-i18n="materials"></div>
+  <div id="sections"></div>
+</main>
+
+<template id="tpl-key">
+  <ul>
+    <li><b>Ciklus:</b> ATP se veže → glava se <b>odvoji</b> → hidroliza ATP → ADP·Pi <b>napne</b> glavu (90°) → ako je Ca²⁺ otkrio vezno mjesto, glava se <b>veže</b> → otpuštanje Pi → <b>zaveslaj</b> (45°, aktin klizi) → otpuštanje ADP → <b>rigor</b> → novi ATP.</li>
+    <li><b>Ca²⁺ ne djeluje na miozin nego na troponin:</b> pomakne tropomiozin i otkrije vezna mjesta na aktinu. Bez Ca²⁺ napete glave samo čekaju — opuštenost.</li>
+    <li><b>ATP treba i za kontrakciju i za opuštanje.</b> Bez ATP glave ostaju vezane u rigoru: <b>rigor mortis</b>, ishemijska kontraktura. Ca²⁺ koji curi bez prestanka (RyR, <b>maligna hipertermija</b>) daje trajnu kontrakciju i toplinu; <b>dantrolen</b> zatvara RyR.</li>
+  </ul>
+</template>
+<template id="tpl-key-en">
+  <ul>
+    <li><b>The cycle:</b> ATP binds → the head <b>detaches</b> → ATP hydrolysis → ADP·Pi <b>cocks</b> the head (90°) → if Ca²⁺ has exposed a binding site the head <b>attaches</b> → Pi release → <b>power stroke</b> (45°, actin slides) → ADP release → <b>rigor</b> → new ATP.</li>
+    <li><b>Ca²⁺ acts not on myosin but on troponin:</b> it shifts tropomyosin and exposes the binding sites on actin. Without Ca²⁺ the cocked heads just wait — relaxation.</li>
+    <li><b>ATP is needed for both contraction and relaxation.</b> Without ATP the heads stay attached in rigor: <b>rigor mortis</b>, ischaemic contracture. Ca²⁺ leaking without end (RyR, <b>malignant hyperthermia</b>) gives sustained contraction and heat; <b>dantrolene</b> closes RyR.</li>
+  </ul>
+</template>
+
+<template id="tpl-outcomes">
+  <span class="draft">Nacrt — nova vježba (2026.); pripremljeno za pregled autora.</span>
+  <h2>Nakon obrade ove vježbe moći ćete:</h2>
+  <ul>
+    <li>opisati građu debelog i tankog filamenta (miozin, aktin, tropomiozin, troponin) i ulogu svakog dijela u kontrakciji</li>
+    <li>nabrojiti korake ciklusa poprečnih mostova i za svaki navesti koji je nukleotid vezan na glavu i je li glava vezana za aktin</li>
+    <li>objasniti kako Ca²⁺ preko troponina i tropomiozina „uključuje“ tanki filament i zašto je opuštanje aktivan proces</li>
+    <li>objasniti mehanizam rigor mortisa i ishemijske kontrakture te zašto je mišić bez ATP-a krut, a ne mlohav</li>
+    <li>opisati malignu hipertermiju (RYR1, okidači, znakovi) i mehanizam djelovanja dantrolena</li>
+  </ul>
+</template>
+
+<template id="tpl-theory">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>FILAMENTI.</b> Debeli filament čini ~ 200 molekula miozina; svaka ima dvije glave s mjestom za vezanje aktina i ATPaznim mjestom, spojene na rep savitljivim „zglobovima“. Tanki filament čine dva uvijena lanca F-aktina s veznim mjestima za miozin, uz njih dva lanca <b>tropomiozina</b> koji u mirovanju leže preko veznih mjesta, i na svakih sedam aktinskih monomera kompleks <b>troponina</b> (troponin T veže tropomiozin, I inhibira, C veže Ca²⁺).</p>
+  <p><b>CIKLUS POPREČNOG MOSTA</b> (teorija klizanja filamenata i „hodanja“ glava). Polazimo od glave u <b>rigoru</b>, čvrsto vezane za aktin pod kutom od 45°, bez nukleotida. (1) <b>Vezanje ATP</b> smanjuje afinitet glave za aktin → glava se <b>odvaja</b>. (2) <b>Hidroliza ATP</b> u ADP + Pi (oba ostaju vezana) prevodi glavu u „napeti“ položaj od 90° — energija je pohranjena u konformaciji glave. (3) Ako je vezno mjesto na aktinu otkriveno (Ca²⁺), napeta glava se <b>veže</b>, najprije slabo pa jako. (4) <b>Otpuštanje Pi</b> pokreće <b>zaveslaj</b>: glava se zakreće natrag na 45° i povuče tanki filament ≈ 10 nm prema sredini sarkomere. (5) <b>Otpuštanje ADP</b> vraća glavu u rigor — i ciklus kreće iznova čim se veže nova molekula ATP. Stotine glava po filamentu rade asinkrono, pa je klizanje glatko; svaki ciklus troši jedan ATP.</p>
+  <p><b>ULOGA Ca²⁺.</b> Kad mišićni AP preko T-tubula otvori rianodinske receptore, Ca²⁺ iz SR poraste s 0,1 na ≈ 10 µmol/L i veže se na <b>troponin C</b>. Kompleks troponina povuče tropomiozin dublje u utor aktinskog lanca i <b>otkrije vezna mjesta</b> — tek sada napete glave mogu započeti cikluse. Opuštanje nastupa kad SERCA (Ca²⁺-ATPaza) vrati Ca²⁺ u SR: troponin otpusti Ca²⁺, tropomiozin ponovno prekrije mjesta, a glave se — uz ATP — odvoje i ostanu napete. Opuštanje je dakle <i>aktivan</i> proces koji troši ATP na dva mjesta (SERCA i odvajanje glava).</p>
+  <h2>KLINIČKI SLUČAJEVI</h2>
+  <p><b>Rigor mortis.</b> Nakon smrti prestaje sinteza ATP, ali se bazalna potrošnja nastavlja. Kad ATP padne, SERCA više ne može zadržati Ca²⁺ u SR; Ca²⁺ curi u sarkoplazmu, tropomiozin se pomakne i napete glave se vežu i zaveslaju (blaga terminalna kontraktura), a zatim — bez ATP — <b>ne mogu se odvojiti</b>. Svi su mostovi zaglavljeni: mišić je krut. Rigor nastupa nakon 2–6 sati (prije u toplini i nakon napora, kada su zalihe glikogena i ATP manje), a popušta nakon 24–48 h kad autoliza razori bjelančevine. Isti mehanizam, u živom tkivu, je <b>ishemijska kontraktura</b> (npr. „kameno srce“ pri dugotrajnoj ishemiji miokarda).</p>
+  <p><b>Cijanid / ishemija.</b> Cijanid blokira citokrom-oksidazu, ishemija uskraćuje kisik: oksidativna fosforilacija staje. Podražen mišić još kratko radi na zalihama fosfokreatina i glikolize, a zatim ATP ponestane i glave ostaju u rigoru. Razlika prema kurareu ili botulizmu: ovdje je problem u mišiću, ne u spojnici, i mišić je <i>krut</i>, ne mlohav.</p>
+  <p><b>Maligna hipertermija.</b> Nasljedna (autosomno dominantna) mutacija rianodinskog receptora RYR1 (rjeđe CACNA1S). Halogeni anestetici (halotan, sevofluran) i sukcinilkolin otvore mutirani RyR koji tada <b>curi Ca²⁺ bez prestanka</b>: vezna mjesta su trajno otkrivena, glave cikliraju bez živčanih impulsa, troše ATP i proizvode toplinu. Znakovi: rigidnost (prvo žvačnih mišića), tahikardija, nagli porast CO₂ u izdahu, temperatura raste ~ 1 °C svakih 5 min, acidoza, hiperkalemija, rabdomioliza (mioglobinurija, zatajenje bubrega). Liječenje: odmah prekinuti okidač, hiperventilacija 100 % O₂, hlađenje i <b>dantrolen</b> — specifični blokator RyR koji zatvori curenje Ca²⁺ pa se tropomiozin vrati preko veznih mjesta i mišić se (uz ATP) opusti. Prije dantrolena smrtnost je bila > 70 %, danas < 5 %.</p>
+</template>
+
+<template id="tpl-howto">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p>Slika prikazuje tanki filament (aktin s tropomiozinom i troponinom) i debeli filament s jednom <b>reprezentativnom glavom</b> koja prolazi kroz stanja ciklusa; natpis uz glavu pokazuje vezani nukleotid, traka ispod slike udio <i>svih</i> glava u svakom stanju. Graf bilježi silu, ATP, rigor i Ca²⁺ u vremenu. Simulacija teče stalno (vrijeme je didaktički sažeto). Velika glava je namjerno usporena — svaki korak traje oko 1,5 s neovisno o brzini simulacije, a brzinu glave birate zasebno (sporo / normalno / brzo); za scenarije ubrzajte simulaciju na 3×.</p>
+  <ol>
+    <li>u mirovanju pogledajte glavu: napeta je (ADP·Pi) i čeka — vezna mjesta su pokrivena;</li>
+    <li>kliknite <b>Podraži</b>: Ca²⁺ otkrije mjesta, glava se veže, zavesla, uđe u rigor, veže ATP, odvoji se… pratite natpise ATP / ADP·Pi / ADP; nakon 1,5 s Ca²⁺ nestane i mišić se opusti;</li>
+    <li>uključite <b>Cijanid</b> i podražite: ATP pada, glave završe u rigoru — sila nestane, ali rigor je 100 %;</li>
+    <li>kliknite <b>Rigor mortis</b>: bez ikakvog podražaja mišić postane krut kad ATP ponestane (Ca²⁺ curi iz SR);</li>
+    <li>uključite <b>Malignu hipertermiju</b>: kontrakcija bez podražaja, temperatura raste; zatim uključite <b>Dantrolen</b>;</li>
+    <li>riješite vođene zadatke (9).</li>
+  </ol>
+</template>
+
+<template id="tpl-results">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>Zdrav mišić:</b> nakon podražaja sila naraste na ≈ 70 % (udio glava u stanjima „vezana“ i „zaveslaj“), ATP ostane ≈ 97 % jer sinteza prati potrošnju, temperatura blago raste; kad Ca²⁺ nestane, sila padne na 0 u nekoliko stotina ms, a sve glave vrate se u „napeto“ stanje. <b>Cijanid + podražaj:</b> ATP padne na 0 za ≈ 1 s, sila nestane, rigor 100 %. <b>Rigor mortis:</b> bez podražaja ATP pada bazalnom potrošnjom ≈ 2 s, zatim kratka kontraktura (Ca²⁺ curi) i trajni rigor 100 %. <b>Maligna hipertermija:</b> sila ≈ 70 % bez podražaja, temperatura raste nekoliko stupnjeva u nekoliko sekundi simulacije, ATP postupno pada; <b>dantrolen</b> vrati silu na 0 i zaustavi zagrijavanje.</p>
+</template>
+
+<template id="tpl-questions">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <ol>
+    <li>Nacrtajte ciklus poprečnog mosta i uz svaki korak napišite koji je nukleotid vezan na glavu (ATP, ADP·Pi, ADP, ništa) i je li glava vezana za aktin.</li>
+    <li>Koji korak ciklusa zahtijeva vezanje ATP, a koji hidrolizu ATP? Što se događa s mišićem kad ATP-a nema?</li>
+    <li>Zašto se mišić opušta tek kad se Ca²⁺ vrati u SR i zašto opuštanje troši ATP?</li>
+    <li>Objasnite redoslijed događaja koji dovode do rigor mortisa i zašto rigor nastupa brže u toplom okolišu i nakon tjelesnog napora.</li>
+    <li>Bolesnik u anesteziji halotanom razvije rigidnost žvačnih mišića, tahikardiju i porast CO₂. Što sumnjate, koji je mehanizam i koji lijek ćete dati — i zašto baš taj?</li>
+  </ol>
+</template>
+
+<template id="tpl-outcomes-en">
+  <span class="draft">Draft — new exercise (2026); prepared for the authors' review.</span>
+  <h2>After completing this exercise you will be able to:</h2>
+  <ul>
+    <li>describe the structure of the thick and thin filaments (myosin, actin, tropomyosin, troponin) and the role of each part in contraction</li>
+    <li>list the steps of the cross-bridge cycle and for each state which nucleotide is bound to the head and whether the head is attached to actin</li>
+    <li>explain how Ca²⁺ "switches on" the thin filament via troponin and tropomyosin and why relaxation is an active process</li>
+    <li>explain the mechanism of rigor mortis and ischaemic contracture and why a muscle without ATP is stiff rather than flaccid</li>
+    <li>describe malignant hyperthermia (RYR1, triggers, signs) and the mechanism of action of dantrolene</li>
+  </ul>
+</template>
+
+<template id="tpl-theory-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>THE FILAMENTS.</b> The thick filament is made of ~ 200 myosin molecules; each has two heads with an actin-binding site and an ATPase site, joined to the tail by flexible "hinges". The thin filament consists of two twisted strands of F-actin carrying myosin-binding sites, two strands of <b>tropomyosin</b> that at rest lie over the binding sites, and every seven actin monomers a <b>troponin</b> complex (troponin T binds tropomyosin, I inhibits, C binds Ca²⁺).</p>
+  <p><b>THE CROSS-BRIDGE CYCLE</b> (sliding-filament theory and the "walk-along" mechanism). Start with a head in <b>rigor</b>, firmly bound to actin at 45° without a nucleotide. (1) <b>ATP binding</b> lowers the head's affinity for actin → the head <b>detaches</b>. (2) <b>ATP hydrolysis</b> to ADP + Pi (both remain bound) moves the head into the "cocked" 90° position — the energy is stored in the head's conformation. (3) If the binding site on actin is exposed (Ca²⁺), the cocked head <b>attaches</b>, first weakly then strongly. (4) <b>Pi release</b> triggers the <b>power stroke</b>: the head swings back to 45° and pulls the thin filament ≈ 10 nm toward the centre of the sarcomere. (5) <b>ADP release</b> returns the head to rigor — and the cycle restarts as soon as a new ATP binds. Hundreds of heads per filament work asynchronously, so sliding is smooth; each cycle uses one ATP.</p>
+  <p><b>THE ROLE OF Ca²⁺.</b> When the muscle AP opens the ryanodine receptors via the T-tubules, Ca²⁺ from the SR rises from 0.1 to ≈ 10 µmol/L and binds <b>troponin C</b>. The troponin complex pulls tropomyosin deeper into the groove of the actin strand and <b>exposes the binding sites</b> — only now can the cocked heads begin their cycles. Relaxation follows when SERCA (the Ca²⁺-ATPase) pumps Ca²⁺ back into the SR: troponin releases Ca²⁺, tropomyosin covers the sites again, and the heads — given ATP — detach and remain cocked. Relaxation is therefore an <i>active</i> process that uses ATP in two places (SERCA and head detachment).</p>
+  <h2>CLINICAL CASES</h2>
+  <p><b>Rigor mortis.</b> After death ATP synthesis stops but basal consumption continues. When ATP falls, SERCA can no longer retain Ca²⁺ in the SR; Ca²⁺ leaks into the sarcoplasm, tropomyosin shifts and the cocked heads attach and stroke (a mild terminal contracture), and then — without ATP — <b>cannot detach</b>. All cross-bridges are locked: the muscle is stiff. Rigor sets in after 2–6 hours (sooner in warmth and after exertion, when glycogen and ATP stores are lower) and resolves after 24–48 h when autolysis destroys the proteins. The same mechanism in living tissue is <b>ischaemic contracture</b> (e.g. the "stone heart" of prolonged myocardial ischaemia).</p>
+  <p><b>Cyanide / ischaemia.</b> Cyanide blocks cytochrome oxidase, ischaemia withholds oxygen: oxidative phosphorylation stops. A stimulated muscle works a little longer on phosphocreatine and glycolysis, then ATP runs out and the heads remain in rigor. Unlike curare or botulism, the problem here is in the muscle, not the junction, and the muscle is <i>stiff</i>, not flaccid.</p>
+  <p><b>Malignant hyperthermia.</b> An inherited (autosomal dominant) mutation of the ryanodine receptor RYR1 (less often CACNA1S). Halogenated anaesthetics (halothane, sevoflurane) and succinylcholine open the mutant RyR, which then <b>leaks Ca²⁺ without end</b>: the binding sites stay exposed, the heads cycle without nerve impulses, consume ATP and generate heat. Signs: rigidity (masseters first), tachycardia, a sharp rise in end-tidal CO₂, temperature rising ~ 1 °C every 5 min, acidosis, hyperkalaemia, rhabdomyolysis (myoglobinuria, renal failure). Treatment: stop the trigger at once, hyperventilate with 100 % O₂, cool, and give <b>dantrolene</b> — the specific RyR blocker that stops the Ca²⁺ leak so tropomyosin covers the binding sites again and the muscle (with ATP) relaxes. Before dantrolene mortality exceeded 70 %; today it is below 5 %.</p>
+</template>
+
+<template id="tpl-howto-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p>The picture shows the thin filament (actin with tropomyosin and troponin) and the thick filament with one <b>representative head</b> that passes through the states of the cycle; the label next to the head shows the bound nucleotide, the bar under the picture the share of <i>all</i> heads in each state. The graph records force, ATP, rigor and Ca²⁺ over time. The simulation runs continuously (time is didactically compressed). The large head is deliberately slowed — each step lasts about 1.5 s regardless of the simulation speed, and the head speed is chosen separately (slow / normal / fast); speed the simulation up to 3× for the scenarios.</p>
+  <ol>
+    <li>at rest look at the head: it is cocked (ADP·Pi) and waiting — the binding sites are covered;</li>
+    <li>click <b>Stimulate</b>: Ca²⁺ exposes the sites, the head attaches, strokes, enters rigor, binds ATP, detaches… follow the ATP / ADP·Pi / ADP labels; after 1.5 s Ca²⁺ is gone and the muscle relaxes;</li>
+    <li>switch on <b>Cyanide</b> and stimulate: ATP falls, the heads end in rigor — force disappears but rigor is 100 %;</li>
+    <li>click <b>Rigor mortis</b>: without any stimulus the muscle becomes stiff once ATP runs out (Ca²⁺ leaks from the SR);</li>
+    <li>switch on <b>Malignant hyperthermia</b>: contraction without a stimulus, temperature rises; then switch on <b>Dantrolene</b>;</li>
+    <li>work through the guided tasks (9).</li>
+  </ol>
+</template>
+
+<template id="tpl-results-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>Healthy muscle:</b> after a stimulus force rises to ≈ 70 % (share of heads in the "attached" and "stroke" states), ATP stays ≈ 97 % because synthesis keeps pace with use, temperature rises slightly; when Ca²⁺ is gone force falls to 0 within a few hundred ms and all heads return to the "cocked" state. <b>Cyanide + stimulus:</b> ATP falls to 0 in ≈ 1 s, force disappears, rigor 100 %. <b>Rigor mortis:</b> without a stimulus ATP falls by basal consumption over ≈ 2 s, then a brief contracture (Ca²⁺ leak) and permanent 100 % rigor. <b>Malignant hyperthermia:</b> force ≈ 70 % without a stimulus, temperature rises several degrees within seconds of simulation, ATP gradually falls; <b>dantrolene</b> returns force to 0 and stops the heating.</p>
+</template>
+
+<template id="tpl-questions-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <ol>
+    <li>Draw the cross-bridge cycle and at each step write which nucleotide is bound to the head (ATP, ADP·Pi, ADP, none) and whether the head is attached to actin.</li>
+    <li>Which step of the cycle requires ATP binding and which ATP hydrolysis? What happens to the muscle when ATP is absent?</li>
+    <li>Why does the muscle relax only when Ca²⁺ has been pumped back into the SR, and why does relaxation consume ATP?</li>
+    <li>Explain the sequence of events leading to rigor mortis and why rigor develops faster in a warm environment and after exertion.</li>
+    <li>A patient under halothane anaesthesia develops masseter rigidity, tachycardia and rising CO₂. What do you suspect, what is the mechanism, and which drug will you give — and why that one?</li>
+  </ol>
+</template>
+
+<script type="module" src="js/v10.js"></script>
+</body>
+</html>

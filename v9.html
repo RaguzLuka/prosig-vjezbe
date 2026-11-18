@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%230b6bcb' stroke-width='5'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%230b6bcb'/%3E%3C/svg%3E">
+<title>PROSIG — Vježba 9: Ionski kanali i Na⁺/K⁺-crpka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main class="page">
+  <div class="page-head">
+    <div class="kicker"><span data-i18n="nav.ex"></span> 9</div>
+    <h1 data-i18n="ex9"></h1>
+  </div>
+  <div class="purpose" data-lang="hr"><b>SVRHA VJEŽBE</b> je (1) vidjeti što se <i>u samom kanalu</i> događa tijekom akcijskog potencijala — Na⁺-kanal s dvoja vrata i tri stanja (zatvoren, otvoren, inaktiviran) nasuprot K⁺-kanalu s jednim vratima i dva stanja — i (2) razumjeti zašto potencijal mirovanja, ionski gradijenti i volumen stanice ovise o Na⁺/K⁺-crpki (ouabain, cijanid).</div>
+  <div class="purpose" data-lang="en"><b>PURPOSE OF THE EXERCISE:</b> (1) to see what happens <i>inside the channel</i> during an action potential — the Na⁺ channel with two gates and three states (closed, open, inactivated) versus the K⁺ channel with one gate and two states — and (2) to understand why the resting potential, the ion gradients and the cell volume depend on the Na⁺/K⁺ pump (ouabain, cyanide).</div>
+  <div id="intro"></div>
+  <div id="modes"></div>
+  <div id="sim" class="sim"></div>
+  <div class="materials-title" data-i18n="materials"></div>
+  <div id="sections"></div>
+</main>
+
+<template id="tpl-key">
+  <ul>
+    <li><b>Na⁺-kanal ima dvoja vrata:</b> brza aktivacijska (<b>m</b>) i spora inaktivacijska (<b>h</b>, „kuglica na lančiću“) → <b>tri stanja</b>: zatvoren-spreman (m↓ h↑) → otvoren (m↑ h↑) → inaktiviran (h↓) → natrag zatvoren tek nakon repolarizacije. Inaktivacija objašnjava kratkoću AP, „sve ili ništa“ i refrakternost.</li>
+    <li><b>K⁺-kanal ima jedna vrata (n)</b> → <b>dva stanja</b>: zatvoren ⇄ otvoren. Otvara se sporo, nema inaktivacije, ostaje otvoren dok traje depolarizacija → repolarizacija i hiperpolarizacija.</li>
+    <li><b>Na⁺/K⁺-crpka</b> (3 Na⁺ van, 2 K⁺ unutra, 1 ATP) održava gradijente koji stvaraju potencijal, izravno dodaje ≈ −4 mV (elektrogena) i poništava Donnanov usis vode — kad stane (ouabain, nema ATP), Na⁺ᵢ ↑, K⁺ᵢ ↓, Eₘ ↑, stanica <b>bubri</b>.</li>
+  </ul>
+</template>
+<template id="tpl-key-en">
+  <ul>
+    <li><b>The Na⁺ channel has two gates:</b> a fast activation gate (<b>m</b>) and a slow inactivation gate (<b>h</b>, "ball and chain") → <b>three states</b>: closed-ready (m↓ h↑) → open (m↑ h↑) → inactivated (h↓) → back to closed only after repolarisation. Inactivation explains the brevity of the AP, "all or none" and refractoriness.</li>
+    <li><b>The K⁺ channel has one gate (n)</b> → <b>two states</b>: closed ⇄ open. It opens slowly, has no inactivation, and stays open as long as the depolarisation lasts → repolarisation and hyperpolarisation.</li>
+    <li><b>The Na⁺/K⁺ pump</b> (3 Na⁺ out, 2 K⁺ in, 1 ATP) maintains the gradients that create the potential, adds ≈ −4 mV directly (electrogenic) and offsets the Donnan pull of water — when it stops (ouabain, no ATP), Na⁺ᵢ ↑, K⁺ᵢ ↓, Eₘ ↑ and the cell <b>swells</b>.</li>
+  </ul>
+</template>
+
+<template id="tpl-outcomes">
+  <span class="draft">Nacrt — nova vježba (2026.); pripremljeno za pregled autora.</span>
+  <h2>Nakon obrade ove vježbe moći ćete:</h2>
+  <ul>
+    <li>opisati građu Na⁺-voltažnog kanala (aktivacijska i inaktivacijska vrata) i navesti njegova tri stanja tijekom akcijskog potencijala</li>
+    <li>opisati građu K⁺-voltažnog kanala (jedna vrata) i objasniti zašto nema inaktivacije i zašto se otvara sporo</li>
+    <li>povezati stanja kanala s fazama akcijskog potencijala, s apsolutnim i relativnim refrakternim razdobljem i s načelom „sve ili ništa“</li>
+    <li>objasniti djelovanje Na⁺/K⁺-ATPaze (stehiometrija 3 : 2, elektrogenost, potrošnja ATP) i tri načina na koja održava potencijal mirovanja i volumen stanice</li>
+    <li>predvidjeti učinak ouabaina, hipoksije/cijanida i smanjene aktivnosti crpke na unutarstanične koncentracije Na⁺ i K⁺, membranski potencijal i volumen</li>
+  </ul>
+</template>
+
+<template id="tpl-theory">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>NA⁺-VOLTAŽNI KANAL.</b> Kanal je velika transmembranska bjelančevina (α-podjedinica s četiri domene od po šest transmembranskih segmenata). Naponski senzor je segment S4 bogat pozitivnim nabojima. Za razumijevanje funkcije dovoljan je Hodgkin–Huxleyjev opis s <b>dvoja vrata</b>: <b>aktivacijska vrata (m)</b> na vanjskoj strani pore, koja su u mirovanju zatvorena i brzo se otvaraju pri depolarizaciji, i <b>inaktivacijska vrata (h)</b> na unutarnjoj strani, koja su u mirovanju otvorena, a zatvaraju se sporo (≈ 1 ms) nakon depolarizacije — molekularno je to petlja između domena III i IV koja poput <i>kuglice na lančiću</i> začepi poru iznutra. Kanal stoga prolazi kroz <b>tri stanja</b>: (1) <b>zatvoren, spreman</b> (m zatvoren, h otvoren) u mirovanju; (2) <b>otvoren</b> (oba otvorena) kratko tijekom uspona AP; (3) <b>inaktiviran</b> (h zatvoren) tijekom vrška i repolarizacije. Iz inaktiviranog stanja kanal se <i>ne može</i> izravno otvoriti — mora se najprije repolarizirati da se h-vrata ponovno otvore i m-vrata zatvore. To objašnjava: zašto je AP kratak (Na⁺-kanali se sami isključe), zašto vrijedi „sve ili ništa“ (kad se dosegne prag, svi se kanali otvore i nakon toga inaktiviraju), zašto postoji apsolutno (h ≈ 0) i relativno (h se oporavlja) refrakterno razdoblje te zašto trajna depolarizacija (hiperkalemija, sukcinilkolin) čini membranu nepodražljivom — kanali ostaju inaktivirani.</p>
+  <p><b>K⁺-VOLTAŽNI KANAL.</b> Sastoji se od četiri podjedinice; Hodgkin–Huxleyjev opis ima samo <b>jedna vrata (n)</b> na unutarnjoj strani pore koja se pri depolarizaciji otvaraju <i>sporo</i> (≈ 10 puta sporije od m-vrata) i pri repolarizaciji sporo zatvaraju. Kanal ima dakle samo <b>dva stanja</b>: zatvoren i otvoren (ovi „odgođeni ispravljači“ nemaju inaktivacije). Zbog sporog otvaranja K⁺-struja kasni za Na⁺-strujom — da nije tako, AP ne bi mogao nastati — a zbog sporog zatvaranja K⁺ nastavlja izlaziti i nakon što se potencijal vratio: <b>hiperpolarizacija</b>.</p>
+  <p><b>Blokatori i toksini.</b> TTX i lokalni anestetici blokiraju Na⁺-kanal (lidokain se veže bolje na otvoren/inaktiviran kanal — „uporabno ovisna blokada“ na vlaknima koja puno pale, npr. bolnim). TEA i 4-aminopiridin blokiraju K⁺-kanale (produljen AP). Pri hiperkalemiji trajna depolarizacija drži Na⁺-kanale inaktiviranima; pri hipokalemiji hiperpolarizacija ih drži spremnima, ali daleko od praga.</p>
+  <p><b>Na⁺/K⁺-ATPaza (Na⁺/K⁺-crpka).</b> Prisutna u svim stanicama, u svakom ciklusu veže 3 Na⁺ iznutra i 1 ATP, fosforilira se, mijenja konformaciju i otpušta Na⁺ van, veže 2 K⁺ izvana, defosforilira se i otpušta K⁺ unutra. Tri su njezine uloge (Guyton): (1) <b>stvara i održava gradijente</b> Na⁺ i K⁺ koji su izvor potencijala mirovanja i akcijskih potencijala; (2) <b>elektrogena je</b> — izbaci jedan pozitivni naboj više nego što unese, što izravno pridonosi potencijalu s nekoliko milivolta; (3) <b>regulira volumen stanice</b>: unutarstanične bjelančevine i organski fosfati su nepropusni anioni koji Donnanovim učinkom privlače Na⁺, Cl⁻ i vodu; crpka to poništava izbacujući neto jedan osmotski aktivni ion po ciklusu. Kad se crpka blokira (ouabain, digitalis u prevelikoj dozi) ili ostane bez ATP (hipoksija, cijanid), Na⁺ se nakuplja, K⁺ istječe, membrana depolarizira, a stanica bubri — to je rani događaj staničnog oštećenja u ishemiji. Crpka troši oko 20–30 % energije stanice u mirovanju, u neuronima i do 70 %.</p>
+</template>
+
+<template id="tpl-howto">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>Vrata kanala uz AP.</b> Slika prikazuje presjek Na⁺-kanala (lijevo) i K⁺-kanala (desno) u membrani; m-vrata su tamnoplavi poklopac na vanjskom ušću, h-vrata tirkizna kuglica na lančiću s unutarnje strane, n-vrata tamnocrveni poklopac. Graf ispod prikazuje akcijski potencijal i varijable m, h, n; ljubičasta crta je trenutak prikazan na slici. Pokrenite reprodukciju (1 ms AP traje ≈ 1 s) ili povucite klizač / gumbe za skok na fazu. Dijagrami stanja lijevo osvjetljavaju trenutačno stanje svakog kanala.</p>
+  <p><b>Na⁺/K⁺-crpka i volumen.</b> Klizačem zadajete aktivnost crpke, prekidačima ouabain (blokada) ili cijanid (nema ATP). Program izračuna 60 minuta: koncentracije Na⁺ᵢ i K⁺ᵢ (gornji graf), membranski potencijal i promjenu volumena (donji graf); stanica na slici mijenja veličinu. Klizačem „Očitaj u minuti“ birate trenutak očitanja.</p>
+  <ol>
+    <li>prođite animaciju kanala u cijelosti i u svakoj fazi pogledajte stanje m, h i n;</li>
+    <li>riješite vođene zadatke (9 o kanalima, 6 o crpki);</li>
+    <li>na kartici crpke usporedite ouabain, cijanid i aktivnost 50 % — obratite pažnju na trenutačni skok Eₘ od +4 mV.</li>
+  </ol>
+</template>
+
+<template id="tpl-results">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <p><b>Kanali.</b> U mirovanju m ≈ 0, h ≈ 0,86, n ≈ 0,18 — oba kanala zatvorena, Na⁺-kanal spreman. Na usponu (t ≈ 1,6 ms) m skoči na 0,9 dok je h još 0,6 → Na⁺-kanal otvoren (m³h ≈ 0,4). Oko vrška h padne ispod 0,4 → inaktiviran, a n naraste na 0,7 → K⁺-kanal otvoren. Tijekom hiperpolarizacije (t ≈ 4–7 ms) m ≈ 0, h se sporo oporavlja (0,15 → 0,65), n polako pada (0,75 → 0,45): Na⁺-kanal je još inaktiviran, K⁺-kanal još otvoren. Tek oko 10 ms h ≈ 0,8 i n < 0,3: oba kanala zatvorena, Na⁺-kanal spreman.</p>
+  <p><b>Crpka.</b> Normalno: stacionarno stanje, Na⁺ᵢ 14, K⁺ᵢ 150 mmol/L, Eₘ −74 mV (od čega −4 mV elektrogeno), volumen 100 %. Ouabain: Eₘ odmah −70 mV, zatim kroz 60 min Na⁺ᵢ raste na ≈ 120, K⁺ᵢ pada na ≈ 30 mmol/L, Eₘ depolarizira na ≈ −50 mV, volumen raste (bubrenje). Cijanid daje isto, s kratkom odgodom dok ATP ne padne. Aktivnost 50 %: novo stacionarno stanje s Na⁺ᵢ ≈ 50, K⁺ᵢ ≈ 105, Eₘ ≈ −67 mV.</p>
+</template>
+
+<template id="tpl-questions">
+  <span class="draft">Nacrt — za pregled autora.</span>
+  <ol>
+    <li>Nacrtajte Na⁺-kanal u tri stanja i označite položaj m- i h-vrata u svakom. U kojem se stanju kanal nalazi tijekom apsolutnog, a u kojem tijekom relativnog refrakternog razdoblja?</li>
+    <li>Zašto K⁺-kanal nema inaktivacijskih vrata i što bi se dogodilo s akcijskim potencijalom kad bi se K⁺-kanali otvarali jednako brzo kao Na⁺-kanali?</li>
+    <li>Objasnite zašto hiperkalemija smanjuje podražljivost iako depolarizira membranu (tj. približava je pragu).</li>
+    <li>Nabrojite tri uloge Na⁺/K⁺-crpke i objasnite zašto njezina blokada dovodi do bubrenja stanice.</li>
+    <li>Digitalis djelomično inhibira Na⁺/K⁺-crpku u srčanom mišiću. Predvidite učinak na Na⁺ᵢ, zatim na izmjenjivač Na⁺/Ca²⁺ i na snagu kontrakcije.</li>
+  </ol>
+</template>
+
+<template id="tpl-outcomes-en">
+  <span class="draft">Draft — new exercise (2026); prepared for the authors' review.</span>
+  <h2>After completing this exercise you will be able to:</h2>
+  <ul>
+    <li>describe the structure of the voltage-gated Na⁺ channel (activation and inactivation gates) and name its three states during the action potential</li>
+    <li>describe the structure of the voltage-gated K⁺ channel (one gate) and explain why it has no inactivation and why it opens slowly</li>
+    <li>relate channel states to the phases of the action potential, to the absolute and relative refractory periods and to the all-or-none principle</li>
+    <li>explain the action of the Na⁺/K⁺-ATPase (3 : 2 stoichiometry, electrogenicity, ATP consumption) and the three ways it maintains the resting potential and cell volume</li>
+    <li>predict the effect of ouabain, hypoxia/cyanide and reduced pump activity on intracellular Na⁺ and K⁺, membrane potential and volume</li>
+  </ul>
+</template>
+
+<template id="tpl-theory-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>THE VOLTAGE-GATED Na⁺ CHANNEL.</b> The channel is a large transmembrane protein (an α-subunit with four domains of six transmembrane segments each). The voltage sensor is segment S4, rich in positive charges. For understanding function the Hodgkin–Huxley description with <b>two gates</b> suffices: the <b>activation gate (m)</b> at the outer mouth of the pore, closed at rest and opening rapidly on depolarisation, and the <b>inactivation gate (h)</b> on the inner side, open at rest and closing slowly (≈ 1 ms) after depolarisation — molecularly the loop between domains III and IV that plugs the pore from inside like a <i>ball on a chain</i>. The channel therefore passes through <b>three states</b>: (1) <b>closed, ready</b> (m closed, h open) at rest; (2) <b>open</b> (both open) briefly during the AP upstroke; (3) <b>inactivated</b> (h closed) during the peak and repolarisation. From the inactivated state the channel <i>cannot</i> open directly — it must first repolarise so that the h gate reopens and the m gate closes. This explains why the AP is brief (Na⁺ channels switch themselves off), why it is "all or none" (once threshold is reached all channels open and then inactivate), why there is an absolute (h ≈ 0) and a relative (h recovering) refractory period, and why sustained depolarisation (hyperkalaemia, succinylcholine) makes the membrane inexcitable — the channels stay inactivated.</p>
+  <p><b>THE VOLTAGE-GATED K⁺ CHANNEL.</b> It consists of four subunits; the Hodgkin–Huxley description has only <b>one gate (n)</b> on the inner side of the pore, which opens <i>slowly</i> on depolarisation (≈ 10 times more slowly than the m gate) and closes slowly on repolarisation. The channel therefore has only <b>two states</b>: closed and open (these "delayed rectifiers" have no inactivation). Because it opens slowly the K⁺ current lags the Na⁺ current — otherwise no AP could arise — and because it closes slowly K⁺ keeps leaving after the potential has returned: <b>hyperpolarisation</b>.</p>
+  <p><b>Blockers and toxins.</b> TTX and local anaesthetics block the Na⁺ channel (lidocaine binds better to open/inactivated channels — "use-dependent block" of fibres that fire a lot, e.g. pain fibres). TEA and 4-aminopyridine block K⁺ channels (prolonged AP). In hyperkalaemia sustained depolarisation keeps Na⁺ channels inactivated; in hypokalaemia hyperpolarisation keeps them ready but far from threshold.</p>
+  <p><b>THE Na⁺/K⁺-ATPase (Na⁺/K⁺ pump).</b> Present in all cells, in each cycle it binds 3 Na⁺ inside and 1 ATP, is phosphorylated, changes conformation and releases Na⁺ outside, binds 2 K⁺ outside, is dephosphorylated and releases K⁺ inside. It has three roles (Guyton): (1) it <b>creates and maintains the gradients</b> of Na⁺ and K⁺ that are the source of the resting and action potentials; (2) it is <b>electrogenic</b> — it expels one more positive charge than it imports, contributing a few millivolts directly to the potential; (3) it <b>regulates cell volume</b>: intracellular proteins and organic phosphates are impermeant anions that attract Na⁺, Cl⁻ and water by the Donnan effect; the pump offsets this by expelling a net one osmotically active ion per cycle. When the pump is blocked (ouabain, digitalis overdose) or deprived of ATP (hypoxia, cyanide), Na⁺ accumulates, K⁺ leaks out, the membrane depolarises and the cell swells — an early event in ischaemic cell injury. The pump uses about 20–30 % of a resting cell's energy, up to 70 % in neurons.</p>
+</template>
+
+<template id="tpl-howto-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>Channel gates during the AP.</b> The picture shows a cross-section of the Na⁺ channel (left) and the K⁺ channel (right) in the membrane; the m gate is the dark-blue lid at the outer mouth, the h gate the cyan ball on a chain on the inner side, the n gate the dark-red lid. The graph below shows the action potential and the variables m, h, n; the purple line is the moment shown in the picture. Press Play (1 ms of AP lasts ≈ 1 s) or drag the slider / use the phase buttons. The state diagrams on the left highlight the current state of each channel.</p>
+  <p><b>Na⁺/K⁺ pump and volume.</b> Set pump activity with the slider, switch on ouabain (block) or cyanide (no ATP). The program computes 60 minutes: Na⁺ᵢ and K⁺ᵢ (upper graph), membrane potential and volume change (lower graph); the cell in the picture changes size. The "Read at minute" slider chooses the moment of reading.</p>
+  <ol>
+    <li>go through the whole channel animation and at each phase look at the state of m, h and n;</li>
+    <li>work through the guided tasks (9 on channels, 6 on the pump);</li>
+    <li>on the pump panel compare ouabain, cyanide and 50 % activity — note the instantaneous +4 mV jump of Eₘ.</li>
+  </ol>
+</template>
+
+<template id="tpl-results-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <p><b>Channels.</b> At rest m ≈ 0, h ≈ 0.86, n ≈ 0.18 — both channels closed, the Na⁺ channel ready. On the upstroke (t ≈ 1.6 ms) m jumps to 0.9 while h is still 0.6 → Na⁺ channel open (m³h ≈ 0.4). Around the peak h falls below 0.4 → inactivated, and n rises to 0.7 → K⁺ channel open. During the hyperpolarisation (t ≈ 4–7 ms) m ≈ 0, h recovers slowly (0.15 → 0.65), n falls slowly (0.75 → 0.45): the Na⁺ channel is still inactivated, the K⁺ channel still open. Only around 10 ms h ≈ 0.8 and n < 0.3: both channels closed, Na⁺ channel ready.</p>
+  <p><b>Pump.</b> Normal: steady state, Na⁺ᵢ 14, K⁺ᵢ 150 mmol/L, Eₘ −74 mV (of which −4 mV electrogenic), volume 100 %. Ouabain: Eₘ immediately −70 mV, then over 60 min Na⁺ᵢ rises to ≈ 120, K⁺ᵢ falls to ≈ 30 mmol/L, Eₘ depolarises to ≈ −50 mV, volume rises (swelling). Cyanide gives the same after a short delay while ATP falls. Activity 50 %: a new steady state with Na⁺ᵢ ≈ 50, K⁺ᵢ ≈ 105, Eₘ ≈ −67 mV.</p>
+</template>
+
+<template id="tpl-questions-en">
+  <span class="draft">Draft — for the authors' review.</span>
+  <ol>
+    <li>Draw the Na⁺ channel in its three states and mark the position of the m and h gates in each. In which state is the channel during the absolute, and in which during the relative refractory period?</li>
+    <li>Why does the K⁺ channel have no inactivation gate, and what would happen to the action potential if K⁺ channels opened as fast as Na⁺ channels?</li>
+    <li>Explain why hyperkalaemia reduces excitability although it depolarises the membrane (i.e. brings it closer to threshold).</li>
+    <li>List the three roles of the Na⁺/K⁺ pump and explain why its blockade leads to cell swelling.</li>
+    <li>Digitalis partly inhibits the Na⁺/K⁺ pump in cardiac muscle. Predict the effect on Na⁺ᵢ, then on the Na⁺/Ca²⁺ exchanger and on the force of contraction.</li>
+  </ol>
+</template>
+
+<script type="module" src="js/v9.js"></script>
+</body>
+</html>
